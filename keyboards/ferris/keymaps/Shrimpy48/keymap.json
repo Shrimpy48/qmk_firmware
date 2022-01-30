@@ -89,11 +89,11 @@
          "KC_TRNS"     , "KC_TRNS",
          "KC_TRNS"     , "KC_TRNS"
         ],
-        ["KC_TRNS"     , "KC_TRNS"      , "KC_VOLU"        , "KC_TRNS"       , "KC_TRNS",
-         "KC_INS"      , "KC_ESC"       , "KC_TRNS"        , "KC_TRNS"       , "KC_TRNS",
+        ["KC_TRNS"     , "KC_TRNS"      , "KC_VOLU"        , "KC_TRNS"       , "KC_PSCR",
+         "KC_INS"      , "KC_ESC"       , "KC_TRNS"        , "KC_BRIU"       , "KC_TRNS",
 
          "KC_MUTE"     , "KC_MPRV"      , "KC_MPLY"        , "KC_MNXT"       , "KC_TRNS",
-         "KC_DEL"      , "KC_ENT"       , "KC_TRNS"        , "KC_BRIU"       , "KC_BRID",
+         "KC_DEL"      , "KC_ENT"       , "KC_TRNS"        , "KC_BRID"       , "KC_TRNS",
 
          "KC_TRNS"     , "KC_TRNS"      , "KC_VOLD"        , "KC_TRNS"       , "KC_TRNS",
          "DF(8)"       , "KC_TRNS"      , "KC_TRNS"        , "KC_TRNS"       , "KC_TRNS",
