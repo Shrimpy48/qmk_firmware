@@ -81,7 +81,7 @@
          "KC_TRNS"     , "KC_TRNS"      , "KC_TRNS"        , "KC_TRNS"       , "KC_TRNS",
 
          "KC_0"        , "KC_1"         , "KC_2"           , "KC_3"          , "KC_PMNS",
-         "KC_TRNS"     , "KC_LSFT"      , "KC_LCTL"        , "KC_NO"         , "KC_DOT",
+         "KC_TRNS"     , "LGUI(KC_LSFT)", "LGUI(KC_LCTL)"  , "KC_NO"         , "KC_DOT",
 
          "KC_PAST"     , "KC_4"         , "KC_5"           , "KC_6"          , "KC_PEQL",
          "KC_TRNS"     , "KC_TRNS"      , "KC_TRNS"        , "KC_TRNS"       , "RESET",
@@ -96,7 +96,7 @@
          "KC_DEL"      , "KC_ENT"       , "KC_TRNS"        , "KC_BRID"       , "KC_TRNS",
 
          "KC_TRNS"     , "KC_TRNS"      , "KC_VOLD"        , "KC_TRNS"       , "KC_TRNS",
-         "DF(8)"       , "KC_TRNS"      , "KC_TRNS"        , "KC_TRNS"       , "KC_TRNS",
+         "DF(8)"       , "KC_TRNS"      , "KC_TRNS"        , "KC_TRNS"       , "KC_PWR",
 
          "KC_TRNS"     , "KC_NO",
          "KC_TAB"      , "KC_TRNS"
