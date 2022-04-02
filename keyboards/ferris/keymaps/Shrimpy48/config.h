@@ -36,11 +36,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define TAPPING_TERM 200
 #define PERMISSIVE_HOLD
 #define IGNORE_MOD_TAP_INTERRUPT
-// #define TAPPING_FORCE_HOLD
+#define TAPPING_FORCE_HOLD
 
 // Useful tweaks for OSM keys
 #define ONESHOT_TIMEOUT 2000
-#define ONESHOT_TAP_TOGGLE 2
 
 // Underglow configuration
 #ifdef RGBLIGHT_ENABLE
