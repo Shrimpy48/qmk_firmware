@@ -20,7 +20,7 @@
         ["KC_GRV"       , "KC_DLR"       , "KC_AMPR"                , "KC_ASTR"               , "KC_CIRC",
          "LSFT(KC_QUOT)", "KC_PLUS"      , "KC_PERC"                , "LSFT(KC_NUBS)"         , "LSFT(KC_3)",
 
-         "KC_NUBS"      , "KC_LPRN"      , "KC_RPRN"                , "KC_QUOT"               , "KC_EQL",
+         "KC_NUBS"      , "KC_QUOT"      , "KC_LPRN"                , "KC_RPRN"               , "KC_EQL",
          "KC_NUHS"      , "KC_LCBR"      , "KC_RCBR"                , "KC_MINS"               , "KC_EXLM",
 
          "KC_SLSH"      , "LSFT(KC_NUHS)", "KC_UNDS"                , "LSFT(KC_2)"            , "KC_QUES",
