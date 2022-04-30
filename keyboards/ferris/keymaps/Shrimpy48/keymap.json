@@ -71,7 +71,7 @@
          "KC_NO"        , "KC_TRNS"      , "KC_TRNS"                , "OSM(MOD_LCTL|MOD_LALT)", "KC_TRNS",
          "KC_TRNS"      , "KC_F5"        , "KC_F6"                  , "KC_F7"                 , "KC_F8",
 
-         "KC_TRNS"      , "KC_TRNS"      , "KC_TRNS"                , "KC_TRNS"               , "KC_TRNS",
+         "DF(8)"        , "KC_TRNS"      , "KC_TRNS"                , "KC_TRNS"               , "KC_TRNS",
          "KC_TRNS"      , "KC_F1"        , "KC_F2"                  , "KC_F3"                 , "KC_F4",
 
          "KC_TRNS"      , "KC_TRNS",
@@ -84,7 +84,7 @@
          "KC_TRNS"      , "OSM(MOD_LSFT)", "OSM(MOD_LCTL)"          , "KC_TRNS"               , "KC_NO",
 
          "KC_TRNS"      , "LGUI(KC_4)"   , "LGUI(KC_5)"             , "LGUI(KC_6)"            , "KC_TRNS",
-         "KC_TRNS"      , "KC_TRNS"      , "KC_TRNS"                , "KC_TRNS"               , "KC_TRNS",
+         "KC_TRNS"      , "KC_TRNS"      , "KC_TRNS"                , "KC_TRNS"               , "DF(9)",
 
          "KC_TRNS"      , "KC_TRNS",
          "KC_TRNS"      , "KC_TRNS"
@@ -100,6 +100,30 @@
 
          "KC_TRNS"      , "KC_NO",
          "KC_TAB"       , "KC_TRNS"
+        ],
+        ["KC_TAB"       , "KC_Q"         , "KC_W"                   , "KC_E"                  , "KC_R",
+         "DF(0)"        , "KC_P7"        , "KC_P8"                  , "KC_P9"                 , "KC_NO",
+
+         "KC_LSFT"      , "KC_A"         , "KC_S"                   , "KC_D"                  , "KC_F",
+         "KC_NO"        , "KC_P4"        , "KC_P5"                  , "KC_P6"                 , "KC_NO",
+
+         "KC_LCTL"      , "KC_Z"         , "KC_X"                   , "KC_C"                  , "KC_V",
+         "KC_NO"        , "KC_P1"        , "KC_P2"                  , "KC_P3"                 , "KC_NO",
+
+         "KC_G"         , "KC_SPC",
+         "KC_NO"        , "KC_NO"
+        ],
+        ["KC_NO"        , "KC_NO"        , "KC_NO"                  , "KC_NO"                 , "KC_NO",
+         "DF(0)"        , "KC_NO"        , "KC_NO"                  , "KC_NO"                 , "KC_NO",
+
+         "KC_Q"         , "KC_W"         , "KC_E"                   , "KC_R"                  , "KC_T",
+         "KC_U"         , "KC_I"         , "KC_O"                   , "KC_P"                  , "KC_LBRC",
+
+         "KC_A"         , "KC_S"         , "KC_D"                   , "KC_F"                  , "KC_G",
+         "KC_J"         , "KC_K"         , "KC_L"                   , "KC_SCLN"               , "KC_QUOT",
+
+         "KC_C"         , "KC_V",
+         "KC_N"         , "KC_M"
         ]
     ],
     "author": "Anonymous"
