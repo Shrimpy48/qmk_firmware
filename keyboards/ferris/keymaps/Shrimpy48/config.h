@@ -32,10 +32,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // The default is 40
 #define MOUSEKEY_WHEEL_TIME_TO_MAX 100
 
-// Pick good defaults for enabling homerow modifiers
+// Good defaults for homerow "commands" which aren't used whilst typing
 #define TAPPING_TERM 200
-#define PERMISSIVE_HOLD
+// Treat modifiers the same as layers
 #define IGNORE_MOD_TAP_INTERRUPT
+// Treat double-taps the same as single
 #define TAPPING_FORCE_HOLD
 
 // Useful tweaks for OSM keys
