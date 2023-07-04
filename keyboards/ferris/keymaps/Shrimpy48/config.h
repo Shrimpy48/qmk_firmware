@@ -34,8 +34,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // Good defaults for homerow "commands" which aren't used whilst typing
 #define TAPPING_TERM 200
-// Treat modifiers the same as layers
-#define IGNORE_MOD_TAP_INTERRUPT
 // Treat double-taps the same as single
 #define TAPPING_FORCE_HOLD
 
