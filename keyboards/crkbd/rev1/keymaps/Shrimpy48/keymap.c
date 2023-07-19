@@ -127,6 +127,25 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     return true;
 }
 
+// // Layer indicator
+// bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
+//     if (get_highest_layer(layer_state) > 0) {
+//         uint8_t layer = get_highest_layer(layer_state);
+//
+//         for (uint8_t row = 0; row < MATRIX_ROWS; ++row) {
+//             for (uint8_t col = 0; col < MATRIX_COLS; ++col) {
+//                 uint8_t index = g_led_config.matrix_co[row][col];
+//
+//                 if (index >= led_min && index < led_max && index != NO_LED &&
+//                 keymap_key_to_keycode(layer, (keypos_t){col,row}) > KC_TRNS) {
+//                     rgb_matrix_set_color(index, RGB_GREEN);
+//                 }
+//             }
+//         }
+//     }
+//     return false;
+// }
+
 // OLED config
 #ifdef OLED_ENABLE
 
@@ -161,12 +180,55 @@ static void oled_render_layer_state(void) {
     }
 }
 
-static void oled_render_lock_state(void) {
-    led_t led_state = host_keyboard_led_state();
-    oled_write_P(led_state.num_lock ? PSTR("NUM ") : PSTR("    "), false);
-    oled_write_P(led_state.caps_lock ? PSTR("CAP ") : PSTR("    "), false);
-    oled_write_P(led_state.scroll_lock ? PSTR("SCR ") : PSTR("    "), false);
+static void oled_render_osm_state(void) {
+    switch (os_shft_state) {
+        case os_up_unqueued:
+            oled_write_P(PSTR("     "), false);
+            break;
+        case os_up_queued:
+        case os_down_unused:
+        case os_down_used:
+            oled_write_P(PSTR("SHFT "), false);
+            break;
+    }
+    switch (os_ctrl_state) {
+        case os_up_unqueued:
+            oled_write_P(PSTR("     "), false);
+            break;
+        case os_up_queued:
+        case os_down_unused:
+        case os_down_used:
+            oled_write_P(PSTR("CTRL "), false);
+            break;
+    }
+    switch (os_alt_state) {
+        case os_up_unqueued:
+            oled_write_P(PSTR("    "), false);
+            break;
+        case os_up_queued:
+        case os_down_unused:
+        case os_down_used:
+            oled_write_P(PSTR("ALT "), false);
+            break;
+    }
+    switch (os_cmd_state) {
+        case os_up_unqueued:
+            oled_write_P(PSTR("   "), false);
+            break;
+        case os_up_queued:
+        case os_down_unused:
+        case os_down_used:
+            oled_write_P(PSTR("GUI"), false);
+            break;
+    }
 }
+
+// static void oled_render_lock_state(void) {
+//     led_t led_state = host_keyboard_led_state();
+//     oled_write_P(led_state.num_lock ? PSTR("NUM ") : PSTR("    "), false);
+//     oled_write_P(led_state.caps_lock ? PSTR("CAP ") : PSTR("    "), false);
+//     oled_write_P(led_state.scroll_lock ? PSTR("SCR ") : PSTR("    "), false);
+// }
 
 // char     key_name = ' ';
 // uint16_t last_keycode;
@@ -249,7 +311,7 @@ __attribute__((weak)) void oled_render_logo(void) {
 bool oled_task_user(void) {
     if (is_keyboard_master()) {
         oled_render_layer_state();
-        oled_render_lock_state();
+        oled_render_osm_state();
     } else {
         oled_render_logo();
     }
