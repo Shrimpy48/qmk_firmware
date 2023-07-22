@@ -5,5 +5,8 @@ RGB_MATRIX_CUSTOM_USER = yes
 
 KEY_OVERRIDE_ENABLE = yes
 
+SWAP_HANDS_ENABLE = yes
+
 SRC += oneshot.c
 SRC += swapper.c
+SRC += snek.c

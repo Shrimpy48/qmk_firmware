@@ -26,31 +26,31 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             KC_GRV , KC_Q   , KC_W         , KC_F       , KC_P        , KC_B    ,    KC_J   , KC_L     , KC_U       , KC_Y   , KC_QUOT, KC_SLSH,
             KC_ESC , KC_A   , KC_R         , KC_S       , KC_T        , KC_G    ,    KC_M   , KC_N     , KC_E       , KC_I   , KC_O   , KC_MINS,
             KC_TAB , KC_Z   , KC_X         , KC_C       , KC_D        , KC_V    ,    KC_K   , KC_H     , KC_COMM    , KC_DOT , KC_SCLN, KC_BSPC,
-                                            KC_LCTL     , MO(LOWER)   , KC_SPC  ,    KC_RSFT, MO(RAISE), KC_RGUI
+                                             SH_MON     , MO(LOWER)   , KC_SPC  ,    KC_RSFT, MO(RAISE), SH_MON
             ),
 	[LOWER] = LAYOUT_split_3x6_3(
             KC_NO  , KC_7   , KC_5         , KC_3       , KC_1        , KC_9    ,    KC_8   , KC_0     , KC_2       , KC_4   , KC_6   , KC_NO  ,
             KC_NO  , OS_SHFT, OS_CTRL      , OS_ALT     , OS_GUI      , KC_PSCR ,    KC_ENT , KC_LEFT  , KC_DOWN    , KC_UP  , KC_RGHT, KC_NO  ,
             KC_NO  , KC_NO  , SW_WIN       , RCS(KC_TAB), RCTL(KC_TAB), KC_NO   ,    KC_INS , KC_HOME  , KC_PGDN    , KC_PGUP, KC_END , KC_DEL ,
-                                            KC_TRNS     , KC_TRNS     , KC_TRNS ,    KC_TRNS, KC_TRNS  , KC_TRNS
+                                             KC_TRNS    , KC_TRNS     , KC_TRNS ,    KC_TRNS, KC_TRNS  , KC_TRNS
             ),
 	[RAISE] = LAYOUT_split_3x6_3(
             KC_NO  , KC_TILD, KC_LBRC      , KC_LCBR    , KC_LPRN     , KC_PIPE ,    KC_CIRC, KC_RPRN  , KC_RCBR    , KC_RBRC, KC_GRV , KC_NO  ,
             KC_NO  , KC_MINS, KC_ASTR      , KC_EQL     , KC_UNDS     , KC_DLR  ,    KC_NUHS, OS_GUI   , OS_ALT     , OS_CTRL, OS_SHFT, KC_NO  ,
             KC_NO  , KC_PLUS, LSFT(KC_NUBS), KC_DQUO    , KC_SLSH     , KC_PERC ,    KC_HASH, KC_NUBS  , KC_AMPR    , KC_QUES, KC_EXLM, KC_NO  ,
-                                            KC_TRNS     , KC_TRNS     , KC_TRNS ,    KC_TRNS, KC_TRNS  , KC_TRNS
+                                             KC_TRNS    , KC_TRNS     , KC_TRNS ,    KC_TRNS, KC_TRNS  , KC_TRNS
             ),
 	[ADJUST] = LAYOUT_split_3x6_3(
             KC_F1  , KC_F2  , KC_F3        , KC_F4      , KC_F5       , KC_F6   ,    KC_F7  , KC_F8    , KC_F9      , KC_F10 , KC_F11 , KC_F12 ,
             RGB_SPI, RGB_SAI, RGB_HUI      , RGB_VAI    , RGB_TOG     , RGB_MOD ,    KC_MNXT, KC_MPLY  , KC_VOLU    , OS_CTRL, OS_ALT , KC_BRIU,
             RGB_SPD, RGB_SAD, RGB_HUD      , RGB_VAD    , RGB_M_R     , RGB_RMOD,    KC_MPRV, KC_MUTE  , KC_VOLD    , OS_GUI , OS_SHFT, KC_BRID,
-                                            KC_TRNS     , KC_TRNS     , KC_TRNS ,    KC_TRNS, KC_TRNS  , DF(GAMER)
+                                             KC_TRNS    , KC_TRNS     , KC_TRNS ,    KC_TRNS, KC_TRNS  , DF(GAMER)
             ),
 	[GAMER] = LAYOUT_split_3x6_3(
             KC_TAB , KC_Q   , KC_W         , KC_E       , KC_R        , KC_T    ,    KC_Y   , KC_U     , KC_I       , KC_O   , KC_P   , KC_BSPC,
             KC_LSFT, KC_A   , KC_S         , KC_D       , KC_F        , KC_G    ,    KC_H   , KC_J     , KC_K       , KC_L   , KC_SCLN, KC_QUOT,
             KC_LCTL, KC_Z   , KC_X         , KC_C       , KC_V        , KC_B    ,    KC_N   , KC_M     , KC_COMM    , KC_DOT , KC_SLSH, KC_ESC ,
-                                            KC_LALT     , KC_SPC      , KC_LBRC ,    KC_ENT , KC_RBRC  , DF(DEFAULT)
+                                             KC_LALT    , KC_SPC      , KC_LBRC ,    KC_ENT , KC_RBRC  , DF(DEFAULT)
             )
 };
 
