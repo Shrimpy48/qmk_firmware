@@ -1,5 +1,19 @@
 #include "snek.h"
 
+uint8_t decmod(uint8_t x, uint8_t n) {
+    if (x == 0) {
+        return n - 1;
+    } 
+    return x - 1;
+}
+
+uint8_t incmod(uint8_t x, uint8_t n) {
+    if (x == n - 1) {
+        return 0;
+    } 
+    return x + 1;
+}
+
 uint8_t snake_len() {
     if (snake_head >= snake_tail) {
         return 1 + snake_head - snake_tail;
@@ -16,7 +30,7 @@ bool hit_food() {
 bool hit_snake() {
     coord_t head_pos = snake_cells[snake_head];
     coord_t cell_pos;
-    for (uint8_t i = snake_tail; i != snake_head; i = (i + 1) % SNAKE_MAX_LEN) {
+    for (uint8_t i = snake_tail; i != snake_head; i = incmod(i, SNAKE_MAX_LEN)) {
         cell_pos = snake_cells[i];
         if (cell_pos.row == head_pos.row && cell_pos.col == head_pos.col) {
             return true;
@@ -29,24 +43,24 @@ void advance_head() {
     coord_t new_head = snake_cells[snake_head];
     switch (snake_dir) {
         case up:
-            new_head.row = (new_head.row - 1) % SNAKE_ROWS;
+            new_head.row = decmod(new_head.row, SNAKE_ROWS);
             break;
         case down:
-            new_head.row = (new_head.row + 1) % SNAKE_ROWS;
+            new_head.row = incmod(new_head.row, SNAKE_ROWS);
             break;
         case left:
-            new_head.col = (new_head.col - 1) % SNAKE_COLS;
+            new_head.col = decmod(new_head.col, SNAKE_COLS);
             break;
         case right:
-            new_head.col = (new_head.col + 1) % SNAKE_COLS;
+            new_head.col = incmod(new_head.col, SNAKE_COLS);
             break;
     }
-    snake_head = (snake_head + 1) % SNAKE_MAX_LEN;
+    snake_head = incmod(snake_head, SNAKE_MAX_LEN);
     snake_cells[snake_head] = new_head;
 }
 
 void advance_tail() {
-    snake_tail = (snake_tail + 1) % SNAKE_MAX_LEN;
+    snake_tail = incmod(snake_tail, SNAKE_MAX_LEN);
 }
 
 void place_snake() {
@@ -66,7 +80,7 @@ void place_food() {
         uint8_t col = rand() % SNAKE_COLS;
         bool in_snake = false;
         coord_t cell_pos;
-        for (uint8_t i = snake_tail; i != snake_head; i = (i + 1) % SNAKE_MAX_LEN) {
+        for (uint8_t i = snake_tail; i != snake_head; i = incmod(i, SNAKE_MAX_LEN)) {
             cell_pos = snake_cells[i];
             if (row == cell_pos.row && col == cell_pos.col) {
                 in_snake = true;

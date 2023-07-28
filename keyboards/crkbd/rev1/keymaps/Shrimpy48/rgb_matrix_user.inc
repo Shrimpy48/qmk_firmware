@@ -73,16 +73,27 @@ static bool musical(effect_params_t* params) {
 
 // e.g: A more complex effect, relying on external methods and state, with
 // dedicated init and run methods
-uint8_t last_tick_time;
+uint16_t last_tick_time;
+static coord_t snake_to_matrix(coord_t snake_pos) {
+    coord_t out;
+    if (is_keyboard_left()) {
+        out.row = snake_pos.row;
+        out.col = snake_pos.col;
+    } else {
+        out.row = snake_pos.row + 4;
+        out.col = snake_pos.col;
+    }
+    return out;
+}
 static void snek_complex_init(effect_params_t* params) {
   init_game();
-  last_tick_time = scale16by8(g_rgb_timer, qadd8(rgb_matrix_config.speed / 4, 1));
+  last_tick_time = g_rgb_timer;
 }
 static bool snek_complex_run(effect_params_t* params) {
   RGB_MATRIX_USE_LIMITS(led_min, led_max);
-    uint8_t time = scale16by8(g_rgb_timer, qadd8(rgb_matrix_config.speed / 4, 1));
-  // TODO: call tick() at reasonable intervals
-  if ((time - last_tick_time) > 8) {
+  // TODO: move tick to a housekeeping thing so it works properly with led_min/max?
+  uint16_t time = g_rgb_timer;
+  if ((time - last_tick_time) > 65535 / qadd8(rgb_matrix_config.speed, 4)) {
       tick();
       last_tick_time = time;
   }
@@ -92,7 +103,7 @@ static bool snek_complex_run(effect_params_t* params) {
     coord_t cell_pos;
     bool found = false;
     for (uint8_t idx = snake_tail; idx != snake_head; idx = (idx + 1) % SNAKE_MAX_LEN) {
-        cell_pos = snake_cells[idx];
+        cell_pos = snake_to_matrix(snake_cells[idx]);
         if (g_led_config.matrix_co[cell_pos.row][cell_pos.col] == i) {
             hsv.h = 85;
             RGB rgb = rgb_matrix_hsv_to_rgb(hsv);
@@ -101,13 +112,13 @@ static bool snek_complex_run(effect_params_t* params) {
             break;
         }
     } if (!found) {
-        cell_pos = snake_cells[snake_head];
+        cell_pos = snake_to_matrix(snake_cells[snake_head]);
         if (g_led_config.matrix_co[cell_pos.row][cell_pos.col] == i) {
             hsv.h = 170;
             RGB rgb = rgb_matrix_hsv_to_rgb(hsv);
             rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
         } else {
-            cell_pos = food_pos;
+            cell_pos = snake_to_matrix(food_pos);
             if (g_led_config.matrix_co[cell_pos.row][cell_pos.col] == i) {
                 hsv.h = 0;
                 RGB rgb = rgb_matrix_hsv_to_rgb(hsv);

@@ -2,23 +2,30 @@
 
 #include QMK_KEYBOARD_H
 
-#define SNAKE_ROWS MATRIX_ROWS
-#define SNAKE_COLS MATRIX_COLS
+#define SNAKE_ROWS 3
+#define SNAKE_COLS 6
 #define SNAKE_MAX_LEN (SNAKE_ROWS * SNAKE_COLS)
 
+uint8_t decmod(uint8_t x, uint8_t n);
+
+uint8_t incmod(uint8_t x, uint8_t n);
+
 typedef enum {
-    up, down, left, right,
+    up,
+    down,
+    left,
+    right,
 } dir_t;
 
 typedef struct {
-    int8_t row;
-    int8_t col;
+    uint8_t row;
+    uint8_t col;
 } coord_t;
 
 coord_t snake_cells[SNAKE_MAX_LEN];
 uint8_t snake_head;
 uint8_t snake_tail;
-dir_t snake_dir;
+dir_t   snake_dir;
 coord_t food_pos;
 
 uint8_t snake_len(void);
