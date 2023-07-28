@@ -2,6 +2,7 @@
 
 #include "oneshot.h"
 #include "swapper.h"
+#include "snek.h"
 
 enum layers {
     DEFAULT,
@@ -101,6 +102,26 @@ oneshot_state os_ctrl_state = os_up_unqueued;
 oneshot_state os_alt_state = os_up_unqueued;
 oneshot_state os_cmd_state = os_up_unqueued;
 
+void update_snek(uint16_t keycode, keyrecord_t *record) {
+    if (!record->event.pressed) {
+        return;
+    }
+    switch (keycode) {
+        case KC_LEFT:
+            snake_dir = left;
+            break;
+        case KC_DOWN:
+            snake_dir = down;
+            break;
+        case KC_RIGHT:
+            snake_dir = right;
+            break;
+        case KC_UP:
+            snake_dir = up;
+            break;
+    } 
+}
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     update_swapper(
         &sw_win_active, KC_LALT, KC_TAB, SW_WIN,
@@ -123,6 +144,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         &os_cmd_state, KC_LGUI, OS_GUI,
         keycode, record
     );
+
+    update_snek(keycode, record);
 
     return true;
 }
