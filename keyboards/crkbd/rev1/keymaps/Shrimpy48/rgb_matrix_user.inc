@@ -92,6 +92,7 @@ static void snek_complex_init(effect_params_t* params) {
   if (is_keyboard_master()) { 
       init_game();
       last_tick_time = g_rgb_timer;
+      last_sync_time = 0;
   }
 }
 static bool snek_complex_run(effect_params_t* params) {
@@ -103,7 +104,7 @@ static bool snek_complex_run(effect_params_t* params) {
           tick();
           last_tick_time = time;
       }
-    if (last_sync_time < last_tick_time) {
+    if (last_sync_time != last_tick_time) {
         snake_state_t m2s = snake_state;
         if(transaction_rpc_send(USER_SYNC_SNEK, sizeof(m2s), &m2s)) {
             last_sync_time = last_tick_time;
