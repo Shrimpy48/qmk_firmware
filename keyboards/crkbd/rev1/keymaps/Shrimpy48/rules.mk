@@ -3,9 +3,13 @@ RGB_MATRIX_ENABLE = yes
 
 RGB_MATRIX_CUSTOM_USER = yes
 
+MOUSEKEY_ENABLE = no
+
 KEY_OVERRIDE_ENABLE = yes
 
 SWAP_HANDS_ENABLE = yes
+
+LTO_ENABLE = yes
 
 SRC += oneshot.c
 SRC += swapper.c

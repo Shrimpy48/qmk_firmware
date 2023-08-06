@@ -1,5 +1,7 @@
 #include QMK_KEYBOARD_H
 
+#include "transactions.h"
+
 #include "oneshot.h"
 #include "swapper.h"
 #include "snek.h"
@@ -108,16 +110,16 @@ void update_snek(uint16_t keycode, keyrecord_t *record) {
     }
     switch (keycode) {
         case KC_LEFT:
-            snake_dir = left;
+            snake_state.snake_dir = left;
             break;
         case KC_DOWN:
-            snake_dir = down;
+            snake_state.snake_dir = down;
             break;
         case KC_RIGHT:
-            snake_dir = right;
+            snake_state.snake_dir = right;
             break;
         case KC_UP:
-            snake_dir = up;
+            snake_state.snake_dir = up;
             break;
     } 
 }
@@ -149,6 +151,29 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
     return true;
 }
+
+void user_sync_snek_slave_handler(uint8_t in_buflen, const void* in_data, uint8_t out_buflen, void* out_data) {
+    const snake_state_t *m2s = (const snake_state_t*)in_data;
+    snake_state = *m2s;
+}
+
+void keyboard_post_init_user(void) {
+    transaction_register_rpc(USER_SYNC_SNEK, user_sync_snek_slave_handler);
+}
+
+// Send current snek state to the slave side
+// void housekeeping_task_user(void) {
+//     if (is_keyboard_master()) {
+//         // Interact with slave every 500ms
+//         static uint32_t last_sync = 0;
+//         if (timer_elapsed32(last_sync) > 500) {
+//             snake_state_t m2s = snake_state;
+//             if(transaction_rpc_send(USER_SYNC_SNEK, sizeof(m2s), &m2s)) {
+//                 last_sync = timer_read32();
+//             }
+//         }
+//     }
+// }
 
 // // Layer indicator
 // bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {

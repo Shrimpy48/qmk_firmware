@@ -74,4 +74,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // #    define ENABLE_RGB_MATRIX_PIXEL_RAIN
 // #    define ENABLE_RGB_MATRIX_TYPING_HEATMAP
 #    define ENABLE_RGB_MATRIX_SOLID_REACTIVE_MULTIWIDE
+
+// Sync the snake state between sides
+#define SPLIT_TRANSACTION_IDS_USER USER_SYNC_SNEK
+
 #endif

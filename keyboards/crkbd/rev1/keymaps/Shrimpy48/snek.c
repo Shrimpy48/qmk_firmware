@@ -15,23 +15,23 @@ uint8_t incmod(uint8_t x, uint8_t n) {
 }
 
 uint8_t snake_len() {
-    if (snake_head >= snake_tail) {
-        return 1 + snake_head - snake_tail;
+    if (snake_state.snake_head >= snake_state.snake_tail) {
+        return 1 + snake_state.snake_head - snake_state.snake_tail;
     } else {
-        return SNAKE_MAX_LEN - (snake_tail - snake_head - 1);
+        return SNAKE_MAX_LEN - (snake_state.snake_tail - snake_state.snake_head - 1);
     }
 }
 
 bool hit_food() {
-    coord_t head_pos = snake_cells[snake_head];
-    return head_pos.row == food_pos.row && head_pos.col == food_pos.col;
+    coord_t head_pos = snake_state.snake_cells[snake_state.snake_head];
+    return head_pos.row == snake_state.food_pos.row && head_pos.col == snake_state.food_pos.col;
 }
 
 bool hit_snake() {
-    coord_t head_pos = snake_cells[snake_head];
+    coord_t head_pos = snake_state.snake_cells[snake_state.snake_head];
     coord_t cell_pos;
-    for (uint8_t i = snake_tail; i != snake_head; i = incmod(i, SNAKE_MAX_LEN)) {
-        cell_pos = snake_cells[i];
+    for (uint8_t i = snake_state.snake_tail; i != snake_state.snake_head; i = incmod(i, SNAKE_MAX_LEN)) {
+        cell_pos = snake_state.snake_cells[i];
         if (cell_pos.row == head_pos.row && cell_pos.col == head_pos.col) {
             return true;
         }
@@ -40,8 +40,8 @@ bool hit_snake() {
 }
 
 void advance_head() {
-    coord_t new_head = snake_cells[snake_head];
-    switch (snake_dir) {
+    coord_t new_head = snake_state.snake_cells[snake_state.snake_head];
+    switch (snake_state.snake_dir) {
         case up:
             new_head.row = decmod(new_head.row, SNAKE_ROWS);
             break;
@@ -55,22 +55,22 @@ void advance_head() {
             new_head.col = incmod(new_head.col, SNAKE_COLS);
             break;
     }
-    snake_head = incmod(snake_head, SNAKE_MAX_LEN);
-    snake_cells[snake_head] = new_head;
+    snake_state.snake_head = incmod(snake_state.snake_head, SNAKE_MAX_LEN);
+    snake_state.snake_cells[snake_state.snake_head] = new_head;
 }
 
 void advance_tail() {
-    snake_tail = incmod(snake_tail, SNAKE_MAX_LEN);
+    snake_state.snake_tail = incmod(snake_state.snake_tail, SNAKE_MAX_LEN);
 }
 
 void place_snake() {
-    snake_tail = 0;
-    snake_head = 0;
+    snake_state.snake_tail = 0;
+    snake_state.snake_head = 0;
     uint8_t row = rand() % SNAKE_ROWS;
     uint8_t col = rand() % SNAKE_COLS;
-    snake_cells[snake_tail].row = row;
-    snake_cells[snake_tail].col = col;
-    snake_dir = rand() % 4;
+    snake_state.snake_cells[snake_state.snake_tail].row = row;
+    snake_state.snake_cells[snake_state.snake_tail].col = col;
+    snake_state.snake_dir = rand() % 4;
     advance_head();
 }
 
@@ -80,22 +80,22 @@ void place_food() {
         uint8_t col = rand() % SNAKE_COLS;
         bool in_snake = false;
         coord_t cell_pos;
-        for (uint8_t i = snake_tail; i != snake_head; i = incmod(i, SNAKE_MAX_LEN)) {
-            cell_pos = snake_cells[i];
+        for (uint8_t i = snake_state.snake_tail; i != snake_state.snake_head; i = incmod(i, SNAKE_MAX_LEN)) {
+            cell_pos = snake_state.snake_cells[i];
             if (row == cell_pos.row && col == cell_pos.col) {
                 in_snake = true;
                 break;
             }
         }
-        cell_pos = snake_cells[snake_head];
+        cell_pos = snake_state.snake_cells[snake_state.snake_head];
         if (row == cell_pos.row && col == cell_pos.col) {
             in_snake = true;
         }
         if (in_snake) {
             continue;
         }
-        food_pos.row = row;
-        food_pos.col = col;
+        snake_state.food_pos.row = row;
+        snake_state.food_pos.col = col;
         break;
     }
 }
