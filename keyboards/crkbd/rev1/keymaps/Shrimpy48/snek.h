@@ -4,7 +4,7 @@
 
 #define SNAKE_ROWS 3
 #define SNAKE_COLS 12
-#define SNAKE_MAX_LEN 13
+#define SNAKE_MAX_LEN 28
 
 uint8_t decmod(uint8_t x, uint8_t n);
 
@@ -18,8 +18,8 @@ typedef enum {
 } dir_t;
 
 typedef struct {
-    uint8_t row;
-    uint8_t col;
+    uint8_t row : 4;
+    uint8_t col : 4;
 } coord_t;
 
 typedef struct {
