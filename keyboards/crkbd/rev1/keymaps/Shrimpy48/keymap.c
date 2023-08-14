@@ -104,24 +104,50 @@ oneshot_state os_ctrl_state = os_up_unqueued;
 oneshot_state os_alt_state = os_up_unqueued;
 oneshot_state os_cmd_state = os_up_unqueued;
 
+coord_t matrix_to_snake(keypos_t matrix_pos) {
+    coord_t out;
+    if (matrix_pos.row < 4) {
+        out.row = matrix_pos.row;
+        out.col = matrix_pos.col;
+    } else {
+        out.row = matrix_pos.row - 4;
+        out.col = 11 - matrix_pos.col;
+    }
+    return out;
+}
+
+dir_t turn_towards(coord_t target, coord_t source) {
+    dir_t out;
+    uint8_t x_dist;
+    uint8_t y_dist;
+    if (target.col <= source.col) {
+        x_dist = source.col - target.col;
+        out = left;
+    } else {
+        x_dist = target.col - source.col;
+        out = right;
+    }
+    if (target.row <= source.row) {
+        y_dist = source.row - target.row;
+        if (y_dist >= x_dist) {
+            out = up;
+        }
+    } else {
+        y_dist = target.row - source.row;
+        if (y_dist >= x_dist) {
+            out = down;
+        }
+    }
+    return out;
+}
+
 void update_snek(uint16_t keycode, keyrecord_t *record) {
     if (!record->event.pressed) {
         return;
     }
-    switch (keycode) {
-        case KC_LEFT:
-            snake_state.snake_dir = left;
-            break;
-        case KC_DOWN:
-            snake_state.snake_dir = down;
-            break;
-        case KC_RIGHT:
-            snake_state.snake_dir = right;
-            break;
-        case KC_UP:
-            snake_state.snake_dir = up;
-            break;
-    } 
+    coord_t press_pos = matrix_to_snake(record->event.key);
+    coord_t head_pos = snake_state.snake_cells[snake_state.snake_head];
+    snake_state.snake_dir = turn_towards(press_pos, head_pos);
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {

@@ -14,7 +14,7 @@ RGB_MATRIX_EFFECT(snek)
 // }
 
 static uint8_t led_key_groups[14][5] = {
-    {24, 25, 26, NO_LED, NO_LED}, {2, 3, 21, 22, 23}, {18, 19, 20, NO_LED, NO_LED}, {1, 15, 16, 17, NO_LED}, {10, 11, 12, NO_LED, NO_LED}, {0, 7, 8, 9, NO_LED}, 
+    {24, 25, 26, NO_LED, NO_LED}, {2, 3, 21, 22, 23}, {18, 19, 20, NO_LED, NO_LED}, {1, 15, 16, 17, NO_LED}, {10, 11, 12, NO_LED, NO_LED}, {0, 7, 8, 9, NO_LED},
     {4, 5, 6, 13, 14},
     {31, 32, 33, 40, 41},
     {27, 34, 35, 36, NO_LED}, {37, 38, 39, NO_LED, NO_LED}, {28, 42, 43, 44, NO_LED}, {45, 46, 47, NO_LED, NO_LED}, {29, 30, 48, 49, 50}, {51, 52, 53, NO_LED, NO_LED},
@@ -77,8 +77,8 @@ static bool musical(effect_params_t* params) {
 // dedicated init and run methods
 uint16_t last_tick_time;
 uint16_t last_sync_time;
-static coord_t snake_to_matrix(coord_t snake_pos) {
-    coord_t out;
+static keypos_t snake_to_matrix(coord_t snake_pos) {
+    keypos_t out;
     if (snake_pos.col < 6) {
         out.row = snake_pos.row;
         out.col = snake_pos.col;
@@ -89,7 +89,7 @@ static coord_t snake_to_matrix(coord_t snake_pos) {
     return out;
 }
 static void snek_complex_init(effect_params_t* params) {
-  if (is_keyboard_master()) { 
+  if (is_keyboard_master()) {
       init_game();
       last_tick_time = g_rgb_timer;
       last_sync_time = 0;
@@ -99,7 +99,7 @@ static bool snek_complex_run(effect_params_t* params) {
   RGB_MATRIX_USE_LIMITS(led_min, led_max);
   // TODO: move tick to a housekeeping thing
   uint16_t time = g_rgb_timer;
-  if (is_keyboard_master()) { 
+  if (is_keyboard_master()) {
       if ((time - last_tick_time) > 65535 / qadd8(rgb_matrix_config.speed, 4)) {
           tick();
           last_tick_time = time;
@@ -114,7 +114,7 @@ static bool snek_complex_run(effect_params_t* params) {
   for (uint8_t i = led_min; i < led_max; i++) {
     RGB_MATRIX_TEST_LED_FLAGS();
     HSV hsv = rgb_matrix_config.hsv;
-    coord_t cell_pos;
+    keypos_t cell_pos;
     bool found = false;
     for (uint8_t idx = snake_state.snake_tail; idx != snake_state.snake_head; idx = (idx + 1) % SNAKE_MAX_LEN) {
         cell_pos = snake_to_matrix(snake_state.snake_cells[idx]);
