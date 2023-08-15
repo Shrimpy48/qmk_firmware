@@ -15,10 +15,10 @@ uint8_t incmod(uint8_t x, uint8_t n) {
 }
 
 uint8_t snake_len() {
-    if (snake_state.snake_head >= snake_state.snake_tail) {
+    if (snake_state.snake_head > snake_state.snake_tail) {
         return 1 + snake_state.snake_head - snake_state.snake_tail;
     } else {
-        return SNAKE_MAX_LEN - (snake_state.snake_tail - snake_state.snake_head - 1);
+        return SNAKE_MAX_LEN + 1 - (snake_state.snake_tail - snake_state.snake_head);
     }
 }
 
@@ -121,15 +121,18 @@ void init_game() {
 
 bool tick() {
     advance_head();
-    if (hit_snake()) {
-        init_game();
-    } else if (snake_len() == SNAKE_MAX_LEN) {
-        init_game();
-        return true;
-    } else if (hit_food()) {
+    // At this point, head can == tail.
+    // The tail cannot be food, so it will immediately advance.
+    if (hit_food()) {
         place_food();
     } else {
         advance_tail();
+    }
+    if (hit_snake()) {
+        init_game();
+    } else if (snake_len() >= SNAKE_MAX_LEN) {
+        init_game();
+        return true;
     }
     return false;
 }

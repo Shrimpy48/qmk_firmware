@@ -8,10 +8,10 @@ RGB_MATRIX_EFFECT(snek)
 
 #include "snek.h"
 
-// static uint8_t lerp(uint8_t start, uint8_t end, uint8_t num, uint8_t div) {
-//     uint16_t dist = end - start;
-//     return start + (uint8_t)((dist * (uint16_t)num) / (uint16_t)div);
-// }
+static uint8_t lerp(uint8_t start, uint8_t end, uint8_t num, uint8_t div) {
+    uint16_t dist = end - start;
+    return start + (uint8_t)((dist * (uint16_t)num) / (uint16_t)div);
+}
 
 static uint8_t led_key_groups[14][5] = {
     {24, 25, 26, NO_LED, NO_LED}, {2, 3, 21, 22, 23}, {18, 19, 20, NO_LED, NO_LED}, {1, 15, 16, 17, NO_LED}, {10, 11, 12, NO_LED, NO_LED}, {0, 7, 8, 9, NO_LED},
@@ -111,24 +111,28 @@ static bool snek_complex_run(effect_params_t* params) {
         }
       }
   }
+  uint8_t end = snake_len() - 1;
   for (uint8_t i = led_min; i < led_max; i++) {
     RGB_MATRIX_TEST_LED_FLAGS();
     HSV hsv = rgb_matrix_config.hsv;
     keypos_t cell_pos;
     bool found = false;
-    for (uint8_t idx = snake_state.snake_tail; idx != snake_state.snake_head; idx = (idx + 1) % SNAKE_MAX_LEN) {
+    uint8_t snake_seg = 0;
+    for (uint8_t idx = snake_state.snake_tail; idx != snake_state.snake_head; idx = incmod(idx, SNAKE_MAX_LEN)) {
         cell_pos = snake_to_matrix(snake_state.snake_cells[idx]);
         if (g_led_config.matrix_co[cell_pos.row][cell_pos.col] == i) {
-            hsv.h = 85;
+            hsv.h = lerp(43, 64, end-snake_seg, end);
             RGB rgb = rgb_matrix_hsv_to_rgb(hsv);
             rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
             found = true;
             break;
         }
-    } if (!found) {
+        snake_seg++;
+    }
+    if (!found) {
         cell_pos = snake_to_matrix(snake_state.snake_cells[snake_state.snake_head]);
         if (g_led_config.matrix_co[cell_pos.row][cell_pos.col] == i) {
-            hsv.h = 170;
+            hsv.h = 85;
             RGB rgb = rgb_matrix_hsv_to_rgb(hsv);
             rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
         } else {
@@ -144,7 +148,6 @@ static bool snek_complex_run(effect_params_t* params) {
             }
         }
     }
-      // TODO: update direction based on input
   }
   return rgb_matrix_check_finished_leds(led_max);
 }
