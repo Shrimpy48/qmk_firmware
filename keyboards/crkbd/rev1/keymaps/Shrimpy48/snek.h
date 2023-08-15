@@ -34,6 +34,8 @@ snake_state_t snake_state;
 
 uint8_t snake_len(void);
 
+dir_t tail_dir(void);
+
 bool hit_food(void);
 
 bool hit_snake(void);

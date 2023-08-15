@@ -116,29 +116,40 @@ coord_t matrix_to_snake(keypos_t matrix_pos) {
     return out;
 }
 
-dir_t turn_towards(coord_t target, coord_t source) {
-    dir_t out;
+dir_t turn_towards(coord_t target, coord_t source, dir_t banned_dir) {
+    dir_t preferred;
+    dir_t secondary;
     uint8_t x_dist;
     uint8_t y_dist;
     if (target.col <= source.col) {
         x_dist = source.col - target.col;
-        out = left;
+        preferred = left;
     } else {
         x_dist = target.col - source.col;
-        out = right;
+        preferred = right;
     }
     if (target.row <= source.row) {
         y_dist = source.row - target.row;
         if (y_dist >= x_dist) {
-            out = up;
+            secondary = preferred;
+            preferred = up;
+        } else {
+            secondary = up;
         }
     } else {
         y_dist = target.row - source.row;
         if (y_dist >= x_dist) {
-            out = down;
+            secondary = preferred;
+            preferred = down;
+        } else {
+            secondary = down;
         }
     }
-    return out;
+    if (preferred != banned_dir) {
+        return preferred;
+    } else {
+        return secondary;
+    }
 }
 
 void update_snek(uint16_t keycode, keyrecord_t *record) {
@@ -147,7 +158,7 @@ void update_snek(uint16_t keycode, keyrecord_t *record) {
     }
     coord_t press_pos = matrix_to_snake(record->event.key);
     coord_t head_pos = snake_state.snake_cells[snake_state.snake_head];
-    snake_state.snake_dir = turn_towards(press_pos, head_pos);
+    snake_state.snake_dir = turn_towards(press_pos, head_pos, tail_dir());
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {

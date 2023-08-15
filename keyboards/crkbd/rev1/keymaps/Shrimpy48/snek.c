@@ -3,14 +3,14 @@
 uint8_t decmod(uint8_t x, uint8_t n) {
     if (x == 0) {
         return n - 1;
-    } 
+    }
     return x - 1;
 }
 
 uint8_t incmod(uint8_t x, uint8_t n) {
     if (x == n - 1) {
         return 0;
-    } 
+    }
     return x + 1;
 }
 
@@ -19,6 +19,20 @@ uint8_t snake_len() {
         return 1 + snake_state.snake_head - snake_state.snake_tail;
     } else {
         return SNAKE_MAX_LEN - (snake_state.snake_tail - snake_state.snake_head - 1);
+    }
+}
+
+dir_t tail_dir() {
+    coord_t head = snake_state.snake_cells[snake_state.snake_head];
+    coord_t neck = snake_state.snake_cells[decmod(snake_state.snake_head, SNAKE_MAX_LEN)];
+    if (neck.col < head.col) {
+        return left;
+    } else if (neck.col > head.col) {
+        return right;
+    } else if (neck.row < head.row) {
+        return up;
+    } else {
+        return down;
     }
 }
 
