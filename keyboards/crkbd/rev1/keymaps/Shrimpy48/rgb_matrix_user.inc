@@ -100,7 +100,7 @@ static bool snek_complex_run(effect_params_t* params) {
   // TODO: move tick to a housekeeping thing
   uint16_t time = g_rgb_timer;
   if (is_keyboard_master()) {
-      if ((time - last_tick_time) > 65535 / qadd8(rgb_matrix_config.speed, 4)) {
+      if ((time - last_tick_time) > 65535 / qadd8(rgb_matrix_config.speed, 64)) {
           tick();
           last_tick_time = time;
       }
