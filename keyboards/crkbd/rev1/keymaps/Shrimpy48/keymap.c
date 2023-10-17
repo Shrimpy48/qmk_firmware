@@ -212,24 +212,25 @@ void keyboard_post_init_user(void) {
 //     }
 // }
 
-// // Layer indicator
-// bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
-//     if (get_highest_layer(layer_state) > 0) {
-//         uint8_t layer = get_highest_layer(layer_state);
-//
-//         for (uint8_t row = 0; row < MATRIX_ROWS; ++row) {
-//             for (uint8_t col = 0; col < MATRIX_COLS; ++col) {
-//                 uint8_t index = g_led_config.matrix_co[row][col];
-//
-//                 if (index >= led_min && index < led_max && index != NO_LED &&
-//                 keymap_key_to_keycode(layer, (keypos_t){col,row}) > KC_TRNS) {
-//                     rgb_matrix_set_color(index, RGB_GREEN);
-//                 }
-//             }
-//         }
-//     }
-//     return false;
-// }
+// Layer indicator
+bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
+    if (IS_LAYER_ON_STATE(layer_state | default_layer_state, GAMER)) {
+        for (uint8_t row = 0; row < MATRIX_ROWS; ++row) {
+            for (uint8_t col = 0; col < MATRIX_COLS; ++col) {
+                uint8_t index = g_led_config.matrix_co[row][col];
+
+                if (index >= led_min && index < led_max && index != NO_LED) { 
+                    uint16_t keycode = keymap_key_to_keycode(GAMER, (keypos_t){col,row});
+                    if (keycode == KC_W || keycode == KC_A || keycode == KC_S || keycode == KC_D) {
+                        rgb_matrix_set_color(index, RGB_BLUE);
+                    }
+                }
+            }
+        }
+    }
+
+    return false;
+}
 
 // OLED config
 #ifdef OLED_ENABLE
@@ -244,19 +245,19 @@ oled_rotation_t oled_init_user(oled_rotation_t rotation) {
 static void oled_render_layer_state(void) {
     oled_write_P(PSTR("Layer: "), false);
     switch (get_highest_layer(layer_state | default_layer_state)) {
-        case 0:
+        case DEFAULT:
             oled_write_ln_P(PSTR("Default"), false);
             break;
-        case 1:
+        case LOWER:
             oled_write_ln_P(PSTR("Lower"), false);
             break;
-        case 2:
+        case RAISE:
             oled_write_ln_P(PSTR("Raise"), false);
             break;
-        case 3:
+        case ADJUST:
             oled_write_ln_P(PSTR("Adjust"), false);
             break;
-        case 4:
+        case GAMER:
             oled_write_ln_P(PSTR("Gamer"), false);
             break;
         default:
