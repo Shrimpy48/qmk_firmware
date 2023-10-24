@@ -61,6 +61,26 @@ layer_state_t layer_state_set_user(layer_state_t state) {
     return update_tri_layer_state(state, NUM, SYM, FUN);
 }
 
+// Combo 2nd and 3rd row for modifiers
+const uint16_t PROGMEM ls_combo[] = {KC_A, KC_Z, COMBO_END};
+const uint16_t PROGMEM lc_combo[] = {KC_R, KC_X, COMBO_END};
+const uint16_t PROGMEM la_combo[] = {KC_S, KC_C, COMBO_END};
+const uint16_t PROGMEM lg_combo[] = {KC_T, KC_D, COMBO_END};
+const uint16_t PROGMEM rg_combo[] = {KC_N, KC_H, COMBO_END};
+const uint16_t PROGMEM ra_combo[] = {KC_E, KC_COMM, COMBO_END};
+const uint16_t PROGMEM rc_combo[] = {KC_I, KC_DOT, COMBO_END};
+const uint16_t PROGMEM rs_combo[] = {KC_O, KC_SCLN, COMBO_END};
+combo_t key_combos[] = {
+    COMBO(ls_combo, KC_LSFT),
+    COMBO(lc_combo, KC_LCTL),
+    COMBO(la_combo, KC_LALT),
+    COMBO(lg_combo, KC_LGUI),
+    COMBO(rs_combo, KC_LSFT),
+    COMBO(rc_combo, KC_LCTL),
+    COMBO(ra_combo, KC_LALT),
+    COMBO(rg_combo, KC_LGUI),
+};
+
 // Callum's oneshot and swapper implementation
 bool is_oneshot_cancel_key(uint16_t keycode) {
     switch (keycode) {

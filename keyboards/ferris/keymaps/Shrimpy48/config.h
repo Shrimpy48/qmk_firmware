@@ -37,6 +37,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // Treat double-taps the same as single
 #define TAPPING_FORCE_HOLD
 
+// Layer-independent combos
+#define COMBO_ONLY_FROM_LAYER 0
+
 // Useful tweaks for OSM keys
 #define ONESHOT_TIMEOUT 2000
 
