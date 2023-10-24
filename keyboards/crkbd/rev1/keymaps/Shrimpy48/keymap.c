@@ -7,11 +7,11 @@
 #include "snek.h"
 
 enum layers {
-    DEFAULT,
-    LOWER,
-    RAISE,
-    ADJUST,
-    GAMER,
+    DEF,
+    NUM,
+    SYM,
+    FUN,
+    GMR,
 };
 
 enum keycodes {
@@ -25,35 +25,35 @@ enum keycodes {
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-	[DEFAULT] = LAYOUT_split_3x6_3(
+	[DEF] = LAYOUT_split_3x6_3(
             KC_GRV , KC_Q   , KC_W         , KC_F       , KC_P        , KC_B    ,    KC_J   , KC_L     , KC_U       , KC_Y   , KC_QUOT, KC_MINS,
             KC_ESC , KC_A   , KC_R         , KC_S       , KC_T        , KC_G    ,    KC_M   , KC_N     , KC_E       , KC_I   , KC_O   , KC_BSPC,
             KC_TAB , KC_Z   , KC_X         , KC_C       , KC_D        , KC_V    ,    KC_K   , KC_H     , KC_COMM    , KC_DOT , KC_SCLN, KC_DEL ,
-                                             SH_MON     , MO(LOWER)   , KC_SPC  ,    KC_RSFT, MO(RAISE), SH_MON
+                                             SH_MON     , MO(NUM)     , KC_SPC  ,    KC_RSFT, MO(SYM)  , SH_MON
             ),
-	[LOWER] = LAYOUT_split_3x6_3(
+	[NUM] = LAYOUT_split_3x6_3(
             KC_NO  , KC_7   , KC_5         , KC_3       , KC_1        , KC_9    ,    KC_8   , KC_0     , KC_2       , KC_4   , KC_6   , KC_NO  ,
             KC_NO  , OS_SHFT, OS_CTRL      , OS_ALT     , OS_GUI      , KC_PSCR ,    KC_ENT , KC_LEFT  , KC_DOWN    , KC_UP  , KC_RGHT, KC_NO  ,
             KC_NO  , KC_NO  , SW_WIN       , RCS(KC_TAB), RCTL(KC_TAB), KC_NO   ,    KC_TAB , KC_HOME  , KC_PGDN    , KC_PGUP, KC_END , KC_NO  ,
                                              KC_TRNS    , KC_TRNS     , KC_TRNS ,    KC_TRNS, KC_TRNS  , KC_TRNS
             ),
-	[RAISE] = LAYOUT_split_3x6_3(
+	[SYM] = LAYOUT_split_3x6_3(
             KC_NO  , KC_ESC , KC_LBRC      , KC_LCBR    , KC_LPRN     , KC_PIPE ,    KC_CIRC, KC_RPRN  , KC_RCBR    , KC_RBRC, KC_GRV , KC_NO  ,
             KC_NO  , KC_MINS, KC_ASTR      , KC_EQL     , KC_UNDS     , KC_DLR  ,    KC_NUHS, OS_GUI   , OS_ALT     , OS_CTRL, OS_SHFT, KC_NO  ,
             KC_NO  , KC_PLUS, LSFT(KC_NUBS), KC_DQUO    , KC_SLSH     , KC_PERC ,    KC_HASH, KC_NUBS  , KC_AMPR    , KC_QUES, KC_EXLM, KC_NO  ,
                                              KC_TRNS    , KC_TRNS     , KC_TRNS ,    KC_TRNS, KC_TRNS  , KC_TRNS
             ),
-	[ADJUST] = LAYOUT_split_3x6_3(
+	[FUN] = LAYOUT_split_3x6_3(
             KC_F1  , KC_F2  , KC_F3        , KC_F4      , KC_F5       , KC_F6   ,    KC_F7  , KC_F8    , KC_F9      , KC_F10 , KC_F11 , KC_F12 ,
             RGB_SPI, RGB_SAI, RGB_HUI      , RGB_VAI    , RGB_TOG     , RGB_MOD ,    KC_MNXT, KC_MPLY  , KC_VOLU    , OS_CTRL, OS_ALT , KC_BRIU,
             RGB_SPD, RGB_SAD, RGB_HUD      , RGB_VAD    , RGB_M_R     , RGB_RMOD,    KC_MPRV, KC_MUTE  , KC_VOLD    , OS_GUI , OS_SHFT, KC_BRID,
-                                             KC_TRNS    , KC_TRNS     , KC_TRNS ,    KC_TRNS, KC_TRNS  , DF(GAMER)
+                                             KC_TRNS    , KC_TRNS     , KC_TRNS ,    KC_TRNS, KC_TRNS  , DF(GMR)
             ),
-	[GAMER] = LAYOUT_split_3x6_3(
+	[GMR] = LAYOUT_split_3x6_3(
             KC_TAB , KC_Q   , KC_W         , KC_E       , KC_R        , KC_T    ,    KC_Y   , KC_U     , KC_I       , KC_O   , KC_P   , KC_BSPC,
             KC_LSFT, KC_A   , KC_S         , KC_D       , KC_F        , KC_G    ,    KC_H   , KC_J     , KC_K       , KC_L   , KC_SCLN, KC_QUOT,
             KC_LCTL, KC_Z   , KC_X         , KC_C       , KC_V        , KC_B    ,    KC_N   , KC_M     , KC_COMM    , KC_DOT , KC_SLSH, KC_ESC ,
-                                             KC_LALT    , KC_SPC      , KC_LBRC ,    KC_ENT , KC_RBRC  , DF(DEFAULT)
+                                             KC_LALT    , KC_SPC      , KC_LBRC ,    KC_ENT , KC_RBRC  , DF(DEF)
             )
 };
 
@@ -68,14 +68,14 @@ const key_override_t **key_overrides = (const key_override_t *[]){
 
 // Holding both layer keys puts you in adjust layer
 layer_state_t layer_state_set_user(layer_state_t state) {
-    return update_tri_layer_state(state, LOWER, RAISE, ADJUST);
+    return update_tri_layer_state(state, NUM, SYM, FUN);
 }
 
 // Callum's oneshot and swapper implementation
 bool is_oneshot_cancel_key(uint16_t keycode) {
     switch (keycode) {
-    case MO(LOWER):
-    case MO(RAISE):
+    case MO(NUM):
+    case MO(SYM):
         return true;
     default:
         return false;
@@ -84,8 +84,8 @@ bool is_oneshot_cancel_key(uint16_t keycode) {
 
 bool is_oneshot_ignored_key(uint16_t keycode) {
     switch (keycode) {
-    case MO(LOWER):
-    case MO(RAISE):
+    case MO(NUM):
+    case MO(SYM):
     case KC_LSFT:
     case OS_SHFT:
     case OS_CTRL:
@@ -214,13 +214,13 @@ void keyboard_post_init_user(void) {
 
 // Layer indicator
 bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
-    if (IS_LAYER_ON_STATE(layer_state | default_layer_state, GAMER)) {
+    if (IS_LAYER_ON_STATE(layer_state | default_layer_state, GMR)) {
         for (uint8_t row = 0; row < MATRIX_ROWS; ++row) {
             for (uint8_t col = 0; col < MATRIX_COLS; ++col) {
                 uint8_t index = g_led_config.matrix_co[row][col];
 
                 if (index >= led_min && index < led_max && index != NO_LED) { 
-                    uint16_t keycode = keymap_key_to_keycode(GAMER, (keypos_t){col,row});
+                    uint16_t keycode = keymap_key_to_keycode(GMR, (keypos_t){col,row});
                     if (keycode == KC_W || keycode == KC_A || keycode == KC_S || keycode == KC_D) {
                         rgb_matrix_set_color(index, RGB_BLUE);
                     }
@@ -245,23 +245,23 @@ oled_rotation_t oled_init_user(oled_rotation_t rotation) {
 static void oled_render_layer_state(void) {
     oled_write_P(PSTR("Layer: "), false);
     switch (get_highest_layer(layer_state | default_layer_state)) {
-        case DEFAULT:
+        case DEF:
             oled_write_ln_P(PSTR("Default"), false);
             break;
-        case LOWER:
-            oled_write_ln_P(PSTR("Lower"), false);
+        case NUM:
+            oled_write_ln_P(PSTR("Num/Nav"), false);
             break;
-        case RAISE:
-            oled_write_ln_P(PSTR("Raise"), false);
+        case SYM:
+            oled_write_ln_P(PSTR("Symbol"), false);
             break;
-        case ADJUST:
-            oled_write_ln_P(PSTR("Adjust"), false);
+        case FUN:
+            oled_write_ln_P(PSTR("Function"), false);
             break;
-        case GAMER:
+        case GMR:
             oled_write_ln_P(PSTR("Gamer"), false);
             break;
         default:
-            oled_write_ln_P(PSTR("Undef"), false);
+            oled_write_ln_P(PSTR("Undefined"), false);
             break;
     }
 }

@@ -4,10 +4,10 @@
 #include "swapper.h"
 
 enum layers {
-    DEFAULT,
-    LOWER,
-    RAISE,
-    ADJUST,
+    DEF,
+    NUM,
+    SYM,
+    FUN,
 };
 
 enum keycodes {
@@ -21,25 +21,25 @@ enum keycodes {
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-	[DEFAULT] = LAYOUT_split_3x5_2(
+	[DEF] = LAYOUT_split_3x5_2(
             KC_Q   , KC_W         , KC_F       , KC_P        , KC_B   ,    KC_J   , KC_L     , KC_U   , KC_Y   , KC_QUOT,
             KC_A   , KC_R         , KC_S       , KC_T        , KC_G   ,    KC_M   , KC_N     , KC_E   , KC_I   , KC_O   ,
             KC_Z   , KC_X         , KC_C       , KC_D        , KC_V   ,    KC_K   , KC_H     , KC_COMM, KC_DOT , KC_SCLN,
-                                                 MO(LOWER)   , KC_SPC ,    KC_RSFT, MO(RAISE)
+                                                 MO(NUM)     , KC_SPC ,    KC_RSFT, MO(SYM)
             ),
-	[LOWER] = LAYOUT_split_3x5_2(
+	[NUM] = LAYOUT_split_3x5_2(
             KC_7   , KC_5         , KC_3       , KC_1        , KC_9   ,    KC_8   , KC_0     , KC_2   , KC_4   , KC_6   ,
             OS_SHFT, OS_CTRL      , OS_ALT     , OS_GUI      , KC_PSCR,    KC_ENT , KC_LEFT  , KC_DOWN, KC_UP  , KC_RGHT,
             KC_NO  , SW_WIN       , RCS(KC_TAB), RCTL(KC_TAB), KC_NO  ,    KC_TAB , KC_HOME  , KC_PGDN, KC_PGUP, KC_END ,
                                                  KC_TRNS     , KC_TRNS,    KC_TRNS, KC_TRNS
             ),
-	[RAISE] = LAYOUT_split_3x5_2(
+	[SYM] = LAYOUT_split_3x5_2(
             KC_ESC , KC_LBRC      , KC_LCBR    , KC_LPRN     , KC_PIPE,    KC_CIRC, KC_RPRN  , KC_RCBR, KC_RBRC, KC_GRV ,
             KC_MINS, KC_ASTR      , KC_EQL     , KC_UNDS     , KC_DLR ,    KC_NUHS, OS_GUI   , OS_ALT , OS_CTRL, OS_SHFT,
             KC_PLUS, LSFT(KC_NUBS), KC_DQUO    , KC_SLSH     , KC_PERC,    KC_HASH, KC_NUBS  , KC_AMPR, KC_QUES, KC_EXLM,
                                                  KC_TRNS     , KC_TRNS,    KC_TRNS, KC_TRNS
             ),
-	[ADJUST] = LAYOUT_split_3x5_2(
+	[FUN] = LAYOUT_split_3x5_2(
             KC_F1  , KC_F2        , KC_F3      , KC_F4       , KC_NO  ,    KC_NO  , OS_GUI   , OS_ALT , OS_CTRL, OS_SHFT,
             KC_F5  , KC_F6        , KC_F7      , KC_F8       , KC_NO  ,    KC_MNXT, KC_MPLY  , KC_VOLU, KC_NO  , KC_BSPC,
             KC_F9  , KC_F10       , KC_F11     , KC_F12      , KC_NO  ,    KC_MPRV, KC_MUTE  , KC_VOLD, KC_NO  , KC_DEL ,
@@ -58,14 +58,14 @@ const key_override_t **key_overrides = (const key_override_t *[]){
 
 // Holding both layer keys puts you in adjust layer
 layer_state_t layer_state_set_user(layer_state_t state) {
-    return update_tri_layer_state(state, LOWER, RAISE, ADJUST);
+    return update_tri_layer_state(state, NUM, SYM, FUN);
 }
 
 // Callum's oneshot and swapper implementation
 bool is_oneshot_cancel_key(uint16_t keycode) {
     switch (keycode) {
-    case MO(LOWER):
-    case MO(RAISE):
+    case MO(NUM):
+    case MO(SYM):
         return true;
     default:
         return false;
@@ -74,8 +74,8 @@ bool is_oneshot_cancel_key(uint16_t keycode) {
 
 bool is_oneshot_ignored_key(uint16_t keycode) {
     switch (keycode) {
-    case MO(LOWER):
-    case MO(RAISE):
+    case MO(NUM):
+    case MO(SYM):
     case KC_LSFT:
     case OS_SHFT:
     case OS_CTRL:
