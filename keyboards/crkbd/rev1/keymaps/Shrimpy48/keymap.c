@@ -33,14 +33,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             ),
 	[SYM] = LAYOUT_split_3x6_3(
             KC_NO  , KC_ESC , KC_LBRC      , KC_LCBR    , KC_LPRN     , KC_PIPE ,    KC_CIRC, KC_RPRN  , KC_RCBR    , KC_RBRC, KC_BSPC, KC_NO  ,
-            KC_NO  , KC_MINS, KC_ASTR      , KC_EQL     , KC_UNDS     , KC_DLR  ,    KC_NUHS, KC_QUES  , KC_EXLM    , KC_AMPR, KC_PLUS, KC_NO  ,
+            KC_NO  , KC_PLUS, KC_AMPR      , KC_QUES    , KC_EXLM     , KC_DLR  ,    KC_NUHS, KC_UNDS  , KC_EQL     , KC_ASTR, KC_MINS, KC_NO  ,
             KC_NO  , KC_TAB , LSFT(KC_NUBS), KC_DQUO    , KC_SLSH     , KC_PERC ,    KC_HASH, KC_NUBS  , KC_COLN    , KC_GRV , KC_ENT , KC_NO  ,
                                              KC_TRNS    , KC_TRNS     , KC_TRNS ,    KC_TRNS, KC_TRNS  , KC_TRNS
             ),
 	[NUM] = LAYOUT_split_3x6_3(
             KC_NO  , KC_NO  , KC_7         , KC_8       , KC_9        , KC_NO   ,    KC_NO  , KC_NO    , KC_NO      , KC_NO  , KC_NO  , KC_NO  ,
-            KC_NO  , KC_0   , KC_4         , KC_5       , KC_6        , KC_DOT  ,    KC_NO  , KC_LEFT  , KC_DOWN    , KC_UP  , KC_RGHT, KC_NO  ,
-            KC_NO  , KC_NO  , KC_1         , KC_2       , KC_3        , KC_COMM ,    KC_NO  , KC_HOME  , KC_PGDN    , KC_PGUP, KC_END , KC_NO  ,
+            KC_NO  , KC_NO  , KC_4         , KC_5       , KC_6        , KC_DOT  ,    KC_NO  , KC_LEFT  , KC_DOWN    , KC_UP  , KC_RGHT, KC_NO  ,
+            KC_NO  , KC_0   , KC_1         , KC_2       , KC_3        , KC_COMM ,    KC_NO  , KC_HOME  , KC_PGDN    , KC_PGUP, KC_END , KC_NO  ,
                                              KC_TRNS    , KC_TRNS     , KC_TRNS ,    KC_TRNS, KC_TRNS  , KC_TRNS
             ),
 	[FUN] = LAYOUT_split_3x6_3(
