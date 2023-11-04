@@ -2,57 +2,57 @@
 
 #include "transactions.h"
 
-#include "oneshot.h"
-#include "swapper.h"
+// #include "oneshot.h"
+// #include "swapper.h"
 #include "snek.h"
 
 enum layers {
     DEF,
-    NUM,
     SYM,
+    NUM,
     FUN,
     GMR,
 };
 
-enum keycodes {
-    // Callum's oneshot mod implementation with no timers.
-    OS_SHFT = SAFE_RANGE,
-    OS_CTRL,
-    OS_ALT,
-    OS_GUI,
+// enum keycodes {
+//     // Callum's oneshot mod implementation with no timers.
+//     OS_SHFT = SAFE_RANGE,
+//     OS_CTRL,
+//     OS_ALT,
+//     OS_GUI,
 
-    SW_WIN,  // Switch to next window         (alt-tab)
-};
+//     SW_WIN,  // Switch to next window         (alt-tab)
+// };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	[DEF] = LAYOUT_split_3x6_3(
-            KC_GRV , KC_Q   , KC_W         , KC_F       , KC_P        , KC_B    ,    KC_J   , KC_L     , KC_U       , KC_Y   , KC_QUOT, KC_MINS,
+            KC_NO  , KC_Q   , KC_W         , KC_F       , KC_P        , KC_B    ,    KC_J   , KC_L     , KC_U       , KC_Y   , KC_QUOT, KC_NO ,
             KC_ESC , KC_A   , KC_R         , KC_S       , KC_T        , KC_G    ,    KC_M   , KC_N     , KC_E       , KC_I   , KC_O   , KC_BSPC,
-            KC_TAB , KC_Z   , KC_X         , KC_C       , KC_D        , KC_V    ,    KC_K   , KC_H     , KC_COMM    , KC_DOT , KC_SCLN, KC_DEL ,
-                                             SH_MON     , MO(NUM)     , KC_SPC  ,    KC_RSFT, MO(SYM)  , SH_MON
-            ),
-	[NUM] = LAYOUT_split_3x6_3(
-            KC_NO  , KC_7   , KC_5         , KC_3       , KC_1        , KC_9    ,    KC_8   , KC_0     , KC_2       , KC_4   , KC_6   , KC_NO  ,
-            KC_NO  , OS_SHFT, OS_CTRL      , OS_ALT     , OS_GUI      , KC_PSCR ,    KC_ENT , KC_LEFT  , KC_DOWN    , KC_UP  , KC_RGHT, KC_NO  ,
-            KC_NO  , KC_NO  , SW_WIN       , RCS(KC_TAB), RCTL(KC_TAB), KC_NO   ,    KC_TAB , KC_HOME  , KC_PGDN    , KC_PGUP, KC_END , KC_NO  ,
-                                             KC_TRNS    , KC_TRNS     , KC_TRNS ,    KC_TRNS, KC_TRNS  , KC_TRNS
+            KC_TAB , KC_Z   , KC_X         , KC_C       , KC_D        , KC_V    ,    KC_K   , KC_H     , KC_COMM    , KC_DOT , KC_SCLN, KC_ENT ,
+                                             KC_NO      , MO(SYM)     , KC_SPC  ,    KC_RSFT, MO(NUM)  , KC_NO 
             ),
 	[SYM] = LAYOUT_split_3x6_3(
-            KC_NO  , KC_ESC , KC_LBRC      , KC_LCBR    , KC_LPRN     , KC_PIPE ,    KC_CIRC, KC_RPRN  , KC_RCBR    , KC_RBRC, KC_GRV , KC_NO  ,
-            KC_NO  , KC_MINS, KC_ASTR      , KC_EQL     , KC_UNDS     , KC_DLR  ,    KC_NUHS, OS_GUI   , OS_ALT     , OS_CTRL, OS_SHFT, KC_NO  ,
-            KC_NO  , KC_PLUS, LSFT(KC_NUBS), KC_DQUO    , KC_SLSH     , KC_PERC ,    KC_HASH, KC_NUBS  , KC_AMPR    , KC_QUES, KC_EXLM, KC_NO  ,
+            KC_NO  , KC_ESC , KC_LBRC      , KC_LCBR    , KC_LPRN     , KC_PIPE ,    KC_CIRC, KC_RPRN  , KC_RCBR    , KC_RBRC, KC_BSPC, KC_NO  ,
+            KC_NO  , KC_MINS, KC_ASTR      , KC_EQL     , KC_UNDS     , KC_DLR  ,    KC_NUHS, KC_QUES  , KC_EXLM    , KC_AMPR, KC_PLUS, KC_NO  ,
+            KC_NO  , KC_TAB , LSFT(KC_NUBS), KC_DQUO    , KC_SLSH     , KC_PERC ,    KC_HASH, KC_NUBS  , KC_COLN    , KC_GRV , KC_ENT , KC_NO  ,
+                                             KC_TRNS    , KC_TRNS     , KC_TRNS ,    KC_TRNS, KC_TRNS  , KC_TRNS
+            ),
+	[NUM] = LAYOUT_split_3x6_3(
+            KC_NO  , KC_NO  , KC_7         , KC_8       , KC_9        , KC_NO   ,    KC_NO  , KC_NO    , KC_NO      , KC_NO  , KC_NO  , KC_NO  ,
+            KC_NO  , KC_0   , KC_4         , KC_5       , KC_6        , KC_DOT  ,    KC_NO  , KC_LEFT  , KC_DOWN    , KC_UP  , KC_RGHT, KC_NO  ,
+            KC_NO  , KC_NO  , KC_1         , KC_2       , KC_3        , KC_COMM ,    KC_NO  , KC_HOME  , KC_PGDN    , KC_PGUP, KC_END , KC_NO  ,
                                              KC_TRNS    , KC_TRNS     , KC_TRNS ,    KC_TRNS, KC_TRNS  , KC_TRNS
             ),
 	[FUN] = LAYOUT_split_3x6_3(
             KC_F1  , KC_F2  , KC_F3        , KC_F4      , KC_F5       , KC_F6   ,    KC_F7  , KC_F8    , KC_F9      , KC_F10 , KC_F11 , KC_F12 ,
-            RGB_SPI, RGB_SAI, RGB_HUI      , RGB_VAI    , RGB_TOG     , RGB_MOD ,    KC_MNXT, KC_MPLY  , KC_VOLU    , OS_CTRL, OS_ALT , KC_BRIU,
-            RGB_SPD, RGB_SAD, RGB_HUD      , RGB_VAD    , RGB_M_R     , RGB_RMOD,    KC_MPRV, KC_MUTE  , KC_VOLD    , OS_GUI , OS_SHFT, KC_BRID,
+            RGB_SPI, RGB_SAI, RGB_HUI      , RGB_VAI    , RGB_TOG     , RGB_MOD ,    KC_MNXT, KC_MPLY  , KC_VOLU    , KC_PSCR, KC_DEL , KC_BRIU,
+            RGB_SPD, RGB_SAD, RGB_HUD      , RGB_VAD    , RGB_M_R     , RGB_RMOD,    KC_MPRV, KC_MUTE  , KC_VOLD    , KC_APP , KC_INS , KC_BRID,
                                              KC_TRNS    , KC_TRNS     , KC_TRNS ,    KC_TRNS, KC_TRNS  , DF(GMR)
             ),
 	[GMR] = LAYOUT_split_3x6_3(
-            KC_TAB , KC_Q   , KC_W         , KC_E       , KC_R        , KC_T    ,    KC_Y   , KC_U     , KC_I       , KC_O   , KC_P   , KC_BSPC,
+            KC_TAB , KC_Q   , KC_W         , KC_E       , KC_R        , KC_T    ,    KC_Y   , KC_U     , KC_I       , KC_O   , KC_P   , KC_ESC ,
             KC_LSFT, KC_A   , KC_S         , KC_D       , KC_F        , KC_G    ,    KC_H   , KC_J     , KC_K       , KC_L   , KC_SCLN, KC_QUOT,
-            KC_LCTL, KC_Z   , KC_X         , KC_C       , KC_V        , KC_B    ,    KC_N   , KC_M     , KC_COMM    , KC_DOT , KC_SLSH, KC_ESC ,
+            KC_LCTL, KC_Z   , KC_X         , KC_C       , KC_V        , KC_B    ,    KC_N   , KC_M     , KC_COMM    , KC_DOT , KC_SLSH, KC_BSPC,
                                              KC_LALT    , KC_SPC      , KC_LBRC ,    KC_ENT , KC_RBRC  , DF(DEF)
             )
 };
@@ -71,38 +71,58 @@ layer_state_t layer_state_set_user(layer_state_t state) {
     return update_tri_layer_state(state, NUM, SYM, FUN);
 }
 
-// Callum's oneshot and swapper implementation
-bool is_oneshot_cancel_key(uint16_t keycode) {
-    switch (keycode) {
-    case MO(NUM):
-    case MO(SYM):
-        return true;
-    default:
-        return false;
-    }
-}
+// Combo 2nd and 3rd row for modifiers
+const uint16_t PROGMEM ls_combo[] = {KC_A, KC_Z, COMBO_END};
+const uint16_t PROGMEM lc_combo[] = {KC_R, KC_X, COMBO_END};
+const uint16_t PROGMEM la_combo[] = {KC_S, KC_C, COMBO_END};
+const uint16_t PROGMEM lg_combo[] = {KC_T, KC_D, COMBO_END};
+const uint16_t PROGMEM rg_combo[] = {KC_N, KC_H, COMBO_END};
+const uint16_t PROGMEM ra_combo[] = {KC_E, KC_COMM, COMBO_END};
+const uint16_t PROGMEM rc_combo[] = {KC_I, KC_DOT, COMBO_END};
+const uint16_t PROGMEM rs_combo[] = {KC_O, KC_SCLN, COMBO_END};
+combo_t key_combos[] = {
+    COMBO(ls_combo, KC_LSFT),
+    COMBO(lc_combo, KC_LCTL),
+    COMBO(la_combo, KC_LALT),
+    COMBO(lg_combo, KC_LGUI),
+    COMBO(rs_combo, KC_LSFT),
+    COMBO(rc_combo, KC_LCTL),
+    COMBO(ra_combo, KC_LALT),
+    COMBO(rg_combo, KC_LGUI),
+};
 
-bool is_oneshot_ignored_key(uint16_t keycode) {
-    switch (keycode) {
-    case MO(NUM):
-    case MO(SYM):
-    case KC_LSFT:
-    case OS_SHFT:
-    case OS_CTRL:
-    case OS_ALT:
-    case OS_GUI:
-        return true;
-    default:
-        return false;
-    }
-}
+// // Callum's oneshot and swapper implementation
+// bool is_oneshot_cancel_key(uint16_t keycode) {
+//     switch (keycode) {
+//     case MO(NUM):
+//     case MO(SYM):
+//         return true;
+//     default:
+//         return false;
+//     }
+// }
 
-bool sw_win_active = false;
+// bool is_oneshot_ignored_key(uint16_t keycode) {
+//     switch (keycode) {
+//     case MO(NUM):
+//     case MO(SYM):
+//     case KC_LSFT:
+//     case OS_SHFT:
+//     case OS_CTRL:
+//     case OS_ALT:
+//     case OS_GUI:
+//         return true;
+//     default:
+//         return false;
+//     }
+// }
 
-oneshot_state os_shft_state = os_up_unqueued;
-oneshot_state os_ctrl_state = os_up_unqueued;
-oneshot_state os_alt_state = os_up_unqueued;
-oneshot_state os_cmd_state = os_up_unqueued;
+// bool sw_win_active = false;
+
+// oneshot_state os_shft_state = os_up_unqueued;
+// oneshot_state os_ctrl_state = os_up_unqueued;
+// oneshot_state os_alt_state = os_up_unqueued;
+// oneshot_state os_cmd_state = os_up_unqueued;
 
 coord_t matrix_to_snake(keypos_t matrix_pos) {
     coord_t out;
@@ -162,27 +182,27 @@ void update_snek(uint16_t keycode, keyrecord_t *record) {
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-    update_swapper(
-        &sw_win_active, KC_LALT, KC_TAB, SW_WIN,
-        keycode, record
-    );
+    // update_swapper(
+    //     &sw_win_active, KC_LALT, KC_TAB, SW_WIN,
+    //     keycode, record
+    // );
 
-    update_oneshot(
-        &os_shft_state, KC_LSFT, OS_SHFT,
-        keycode, record
-    );
-    update_oneshot(
-        &os_ctrl_state, KC_LCTL, OS_CTRL,
-        keycode, record
-    );
-    update_oneshot(
-        &os_alt_state, KC_LALT, OS_ALT,
-        keycode, record
-    );
-    update_oneshot(
-        &os_cmd_state, KC_LGUI, OS_GUI,
-        keycode, record
-    );
+    // update_oneshot(
+    //     &os_shft_state, KC_LSFT, OS_SHFT,
+    //     keycode, record
+    // );
+    // update_oneshot(
+    //     &os_ctrl_state, KC_LCTL, OS_CTRL,
+    //     keycode, record
+    // );
+    // update_oneshot(
+    //     &os_alt_state, KC_LALT, OS_ALT,
+    //     keycode, record
+    // );
+    // update_oneshot(
+    //     &os_cmd_state, KC_LGUI, OS_GUI,
+    //     keycode, record
+    // );
 
     update_snek(keycode, record);
 
@@ -266,48 +286,48 @@ static void oled_render_layer_state(void) {
     }
 }
 
-static void oled_render_osm_state(void) {
-    switch (os_shft_state) {
-        case os_up_unqueued:
-            oled_write_P(PSTR("     "), false);
-            break;
-        case os_up_queued:
-        case os_down_unused:
-        case os_down_used:
-            oled_write_P(PSTR("SHFT "), false);
-            break;
-    }
-    switch (os_ctrl_state) {
-        case os_up_unqueued:
-            oled_write_P(PSTR("     "), false);
-            break;
-        case os_up_queued:
-        case os_down_unused:
-        case os_down_used:
-            oled_write_P(PSTR("CTRL "), false);
-            break;
-    }
-    switch (os_alt_state) {
-        case os_up_unqueued:
-            oled_write_P(PSTR("    "), false);
-            break;
-        case os_up_queued:
-        case os_down_unused:
-        case os_down_used:
-            oled_write_P(PSTR("ALT "), false);
-            break;
-    }
-    switch (os_cmd_state) {
-        case os_up_unqueued:
-            oled_write_P(PSTR("   "), false);
-            break;
-        case os_up_queued:
-        case os_down_unused:
-        case os_down_used:
-            oled_write_P(PSTR("GUI"), false);
-            break;
-    }
-}
+// static void oled_render_osm_state(void) {
+//     switch (os_shft_state) {
+//         case os_up_unqueued:
+//             oled_write_P(PSTR("     "), false);
+//             break;
+//         case os_up_queued:
+//         case os_down_unused:
+//         case os_down_used:
+//             oled_write_P(PSTR("SHFT "), false);
+//             break;
+//     }
+//     switch (os_ctrl_state) {
+//         case os_up_unqueued:
+//             oled_write_P(PSTR("     "), false);
+//             break;
+//         case os_up_queued:
+//         case os_down_unused:
+//         case os_down_used:
+//             oled_write_P(PSTR("CTRL "), false);
+//             break;
+//     }
+//     switch (os_alt_state) {
+//         case os_up_unqueued:
+//             oled_write_P(PSTR("    "), false);
+//             break;
+//         case os_up_queued:
+//         case os_down_unused:
+//         case os_down_used:
+//             oled_write_P(PSTR("ALT "), false);
+//             break;
+//     }
+//     switch (os_cmd_state) {
+//         case os_up_unqueued:
+//             oled_write_P(PSTR("   "), false);
+//             break;
+//         case os_up_queued:
+//         case os_down_unused:
+//         case os_down_used:
+//             oled_write_P(PSTR("GUI"), false);
+//             break;
+//     }
+// }
 
 // static void oled_render_lock_state(void) {
 //     led_t led_state = host_keyboard_led_state();
@@ -397,7 +417,7 @@ __attribute__((weak)) void oled_render_logo(void) {
 bool oled_task_user(void) {
     if (is_keyboard_master()) {
         oled_render_layer_state();
-        oled_render_osm_state();
+        // oled_render_osm_state();
     } else {
         oled_render_logo();
     }
