@@ -251,6 +251,10 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 
 // Layer indicator
 bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
+    HSV hsv_blue = {HSV_BLUE};
+    hsv_blue.v = rgb_matrix_get_val();
+    RGB rgb_blue = hsv_to_rgb(hsv_blue);
+
     if (IS_LAYER_ON_STATE(layer_state | default_layer_state, GMR)) {
         for (uint8_t row = 0; row < MATRIX_ROWS; ++row) {
             for (uint8_t col = 0; col < MATRIX_COLS; ++col) {
@@ -259,7 +263,7 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
                 if (index >= led_min && index < led_max && index != NO_LED) { 
                     uint16_t keycode = keymap_key_to_keycode(GMR, (keypos_t){col,row});
                     if (keycode == KC_W || keycode == KC_A || keycode == KC_S || keycode == KC_D) {
-                        rgb_matrix_set_color(index, RGB_BLUE);
+                        rgb_matrix_set_color(index, rgb_blue.r, rgb_blue.g, rgb_blue.b);
                     }
                 }
             }
@@ -272,7 +276,7 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
                 if (index >= led_min && index < led_max && index != NO_LED) { 
                     uint16_t keycode = keymap_key_to_keycode(STN, (keypos_t){col,row});
                     if (keycode >= STN__MIN && keycode <= STN__MAX) {
-                        rgb_matrix_set_color(index, RGB_BLUE);
+                        rgb_matrix_set_color(index, rgb_blue.r, rgb_blue.g, rgb_blue.b);
                     }
                 }
             }
