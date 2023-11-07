@@ -34,6 +34,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // Layer-independent combos
 #define COMBO_ONLY_FROM_LAYER 0
 
+#define FORCE_NKRO
+
 // RGB strip effects
 #ifdef RGBLIGHT_ENABLE
     #define RGBLIGHT_EFFECT_BREATHING

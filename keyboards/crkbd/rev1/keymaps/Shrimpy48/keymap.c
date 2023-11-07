@@ -1,10 +1,11 @@
 #include QMK_KEYBOARD_H
 
 #include "transactions.h"
+#include "keymap_steno.h"
 
 // #include "oneshot.h"
 // #include "swapper.h"
-#include "snek.h"
+// #include "snek.h"
 
 enum layers {
     DEF,
@@ -12,6 +13,7 @@ enum layers {
     NUM,
     FUN,
     GMR,
+    STN,
 };
 
 // enum keycodes {
@@ -47,13 +49,19 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             KC_F1  , KC_F2  , KC_F3        , KC_F4      , KC_F5       , KC_F6   ,    KC_F7  , KC_F8    , KC_F9      , KC_F10 , KC_F11 , KC_F12 ,
             RGB_SPI, RGB_SAI, RGB_HUI      , RGB_VAI    , RGB_TOG     , RGB_MOD ,    KC_MNXT, KC_MPLY  , KC_VOLU    , KC_PSCR, KC_DEL , KC_BRIU,
             RGB_SPD, RGB_SAD, RGB_HUD      , RGB_VAD    , RGB_M_R     , RGB_RMOD,    KC_MPRV, KC_MUTE  , KC_VOLD    , KC_APP , KC_INS , KC_BRID,
-                                             KC_TRNS    , KC_TRNS     , KC_TRNS ,    KC_TRNS, KC_TRNS  , DF(GMR)
+                                             DF(STN)    , KC_TRNS     , KC_TRNS ,    KC_TRNS, KC_TRNS  , DF(GMR)
             ),
 	[GMR] = LAYOUT_split_3x6_3(
             KC_TAB , KC_Q   , KC_W         , KC_E       , KC_R        , KC_T    ,    KC_Y   , KC_U     , KC_I       , KC_O   , KC_P   , KC_ESC ,
             KC_LSFT, KC_A   , KC_S         , KC_D       , KC_F        , KC_G    ,    KC_H   , KC_J     , KC_K       , KC_L   , KC_SCLN, KC_QUOT,
             KC_LCTL, KC_Z   , KC_X         , KC_C       , KC_V        , KC_B    ,    KC_N   , KC_M     , KC_COMM    , KC_DOT , KC_SLSH, KC_BSPC,
                                              KC_LALT    , KC_SPC      , KC_LBRC ,    KC_ENT , KC_RBRC  , DF(DEF)
+            ),
+	[STN] = LAYOUT_split_3x6_3(
+            STN_N1 , STN_N2 , STN_N3       , STN_N4     , STN_N5      , STN_N6  ,    STN_N7 , STN_N8   , STN_N9     , STN_NA , STN_NB , STN_NC ,
+            STN_FN , STN_S1 , STN_TL       , STN_PL     , STN_HL      , STN_ST1 ,    STN_ST3, STN_FR   , STN_PR     , STN_LR , STN_TR , STN_DR ,
+            KC_NO  , STN_S2 , STN_KL       , STN_WL     , STN_RL      , STN_ST2 ,    STN_ST4, STN_RR   , STN_BR     , STN_GR , STN_SR , STN_ZR ,
+                                             DF(DEF)    , STN_A       , STN_O   ,    STN_E  , STN_U    , STN_PWR
             )
 };
 
@@ -124,99 +132,99 @@ combo_t key_combos[] = {
 // oneshot_state os_alt_state = os_up_unqueued;
 // oneshot_state os_cmd_state = os_up_unqueued;
 
-coord_t matrix_to_snake(keypos_t matrix_pos) {
-    coord_t out;
-    if (matrix_pos.row < 4) {
-        out.row = matrix_pos.row;
-        out.col = matrix_pos.col;
-    } else {
-        out.row = matrix_pos.row - 4;
-        out.col = 11 - matrix_pos.col;
-    }
-    return out;
-}
+// coord_t matrix_to_snake(keypos_t matrix_pos) {
+//     coord_t out;
+//     if (matrix_pos.row < 4) {
+//         out.row = matrix_pos.row;
+//         out.col = matrix_pos.col;
+//     } else {
+//         out.row = matrix_pos.row - 4;
+//         out.col = 11 - matrix_pos.col;
+//     }
+//     return out;
+// }
 
-dir_t turn_towards(coord_t target, coord_t source, dir_t banned_dir) {
-    dir_t preferred;
-    dir_t secondary;
-    uint8_t x_dist;
-    uint8_t y_dist;
-    if (target.col <= source.col) {
-        x_dist = source.col - target.col;
-        preferred = left;
-    } else {
-        x_dist = target.col - source.col;
-        preferred = right;
-    }
-    if (target.row <= source.row) {
-        y_dist = source.row - target.row;
-        if (y_dist >= x_dist) {
-            secondary = preferred;
-            preferred = up;
-        } else {
-            secondary = up;
-        }
-    } else {
-        y_dist = target.row - source.row;
-        if (y_dist >= x_dist) {
-            secondary = preferred;
-            preferred = down;
-        } else {
-            secondary = down;
-        }
-    }
-    if (preferred != banned_dir) {
-        return preferred;
-    } else {
-        return secondary;
-    }
-}
+// dir_t turn_towards(coord_t target, coord_t source, dir_t banned_dir) {
+//     dir_t preferred;
+//     dir_t secondary;
+//     uint8_t x_dist;
+//     uint8_t y_dist;
+//     if (target.col <= source.col) {
+//         x_dist = source.col - target.col;
+//         preferred = left;
+//     } else {
+//         x_dist = target.col - source.col;
+//         preferred = right;
+//     }
+//     if (target.row <= source.row) {
+//         y_dist = source.row - target.row;
+//         if (y_dist >= x_dist) {
+//             secondary = preferred;
+//             preferred = up;
+//         } else {
+//             secondary = up;
+//         }
+//     } else {
+//         y_dist = target.row - source.row;
+//         if (y_dist >= x_dist) {
+//             secondary = preferred;
+//             preferred = down;
+//         } else {
+//             secondary = down;
+//         }
+//     }
+//     if (preferred != banned_dir) {
+//         return preferred;
+//     } else {
+//         return secondary;
+//     }
+// }
 
-void update_snek(uint16_t keycode, keyrecord_t *record) {
-    if (!record->event.pressed) {
-        return;
-    }
-    coord_t press_pos = matrix_to_snake(record->event.key);
-    coord_t head_pos = snake_state.snake_cells[snake_state.snake_head];
-    snake_state.snake_dir = turn_towards(press_pos, head_pos, tail_dir());
-}
+// void update_snek(uint16_t keycode, keyrecord_t *record) {
+//     if (!record->event.pressed) {
+//         return;
+//     }
+//     coord_t press_pos = matrix_to_snake(record->event.key);
+//     coord_t head_pos = snake_state.snake_cells[snake_state.snake_head];
+//     snake_state.snake_dir = turn_towards(press_pos, head_pos, tail_dir());
+// }
 
-bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-    // update_swapper(
-    //     &sw_win_active, KC_LALT, KC_TAB, SW_WIN,
-    //     keycode, record
-    // );
+// bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+//     // update_swapper(
+//     //     &sw_win_active, KC_LALT, KC_TAB, SW_WIN,
+//     //     keycode, record
+//     // );
 
-    // update_oneshot(
-    //     &os_shft_state, KC_LSFT, OS_SHFT,
-    //     keycode, record
-    // );
-    // update_oneshot(
-    //     &os_ctrl_state, KC_LCTL, OS_CTRL,
-    //     keycode, record
-    // );
-    // update_oneshot(
-    //     &os_alt_state, KC_LALT, OS_ALT,
-    //     keycode, record
-    // );
-    // update_oneshot(
-    //     &os_cmd_state, KC_LGUI, OS_GUI,
-    //     keycode, record
-    // );
+//     // update_oneshot(
+//     //     &os_shft_state, KC_LSFT, OS_SHFT,
+//     //     keycode, record
+//     // );
+//     // update_oneshot(
+//     //     &os_ctrl_state, KC_LCTL, OS_CTRL,
+//     //     keycode, record
+//     // );
+//     // update_oneshot(
+//     //     &os_alt_state, KC_LALT, OS_ALT,
+//     //     keycode, record
+//     // );
+//     // update_oneshot(
+//     //     &os_cmd_state, KC_LGUI, OS_GUI,
+//     //     keycode, record
+//     // );
 
-    update_snek(keycode, record);
+//     update_snek(keycode, record);
 
-    return true;
-}
+//     return true;
+// }
 
-void user_sync_snek_slave_handler(uint8_t in_buflen, const void* in_data, uint8_t out_buflen, void* out_data) {
-    const snake_state_t *m2s = (const snake_state_t*)in_data;
-    snake_state = *m2s;
-}
+// void user_sync_snek_slave_handler(uint8_t in_buflen, const void* in_data, uint8_t out_buflen, void* out_data) {
+//     const snake_state_t *m2s = (const snake_state_t*)in_data;
+//     snake_state = *m2s;
+// }
 
-void keyboard_post_init_user(void) {
-    transaction_register_rpc(USER_SYNC_SNEK, user_sync_snek_slave_handler);
-}
+// void keyboard_post_init_user(void) {
+//     transaction_register_rpc(USER_SYNC_SNEK, user_sync_snek_slave_handler);
+// }
 
 // Send current snek state to the slave side
 // void housekeeping_task_user(void) {
@@ -242,6 +250,19 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
                 if (index >= led_min && index < led_max && index != NO_LED) { 
                     uint16_t keycode = keymap_key_to_keycode(GMR, (keypos_t){col,row});
                     if (keycode == KC_W || keycode == KC_A || keycode == KC_S || keycode == KC_D) {
+                        rgb_matrix_set_color(index, RGB_BLUE);
+                    }
+                }
+            }
+        }
+    } else if (IS_LAYER_ON_STATE(layer_state | default_layer_state, STN)) {
+        for (uint8_t row = 0; row < MATRIX_ROWS; ++row) {
+            for (uint8_t col = 0; col < MATRIX_COLS; ++col) {
+                uint8_t index = g_led_config.matrix_co[row][col];
+
+                if (index >= led_min && index < led_max && index != NO_LED) { 
+                    uint16_t keycode = keymap_key_to_keycode(STN, (keypos_t){col,row});
+                    if (keycode >= STN__MIN && keycode <= STN__MAX) {
                         rgb_matrix_set_color(index, RGB_BLUE);
                     }
                 }
@@ -279,6 +300,9 @@ static void oled_render_layer_state(void) {
             break;
         case GMR:
             oled_write_ln_P(PSTR("Gamer"), false);
+            break;
+        case STN:
+            oled_write_ln_P(PSTR("Steno"), false);
             break;
         default:
             oled_write_ln_P(PSTR("Undefined"), false);
