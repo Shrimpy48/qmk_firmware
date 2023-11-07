@@ -43,6 +43,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // Useful tweaks for OSM keys
 #define ONESHOT_TIMEOUT 2000
 
+#define FORCE_NKRO
+
 // Underglow configuration
 #ifdef RGBLIGHT_ENABLE
   #define RGBLIGHT_ANIMATIONS
