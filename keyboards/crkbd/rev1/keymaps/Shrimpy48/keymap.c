@@ -74,11 +74,6 @@ const key_override_t **key_overrides = (const key_override_t *[]){
     NULL // Null terminate the array of overrides!
 };
 
-// Holding both layer keys puts you in adjust layer
-layer_state_t layer_state_set_user(layer_state_t state) {
-    return update_tri_layer_state(state, NUM, SYM, FUN);
-}
-
 // Combo 2nd and 3rd row for modifiers
 const uint16_t PROGMEM ls_combo[] = {KC_A, KC_Z, COMBO_END};
 const uint16_t PROGMEM lc_combo[] = {KC_R, KC_X, COMBO_END};
@@ -98,6 +93,20 @@ combo_t key_combos[] = {
     COMBO(ra_combo, KC_LALT),
     COMBO(rg_combo, KC_LGUI),
 };
+
+layer_state_t layer_state_set_user(layer_state_t state) {
+    // Disable combos on steno layer
+    switch (get_highest_layer(layer_state | default_layer_state)) {
+    case STN:
+        combo_disable();
+        break;
+    default: //  for any other layers, or the default layer
+        combo_enable();
+        break;
+    }
+    // Holding both layer keys puts you in adjust layer
+    return update_tri_layer_state(state, NUM, SYM, FUN);
+}
 
 // // Callum's oneshot and swapper implementation
 // bool is_oneshot_cancel_key(uint16_t keycode) {
