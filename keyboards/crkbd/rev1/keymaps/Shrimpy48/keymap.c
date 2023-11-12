@@ -254,6 +254,15 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
     HSV hsv_blue = {HSV_BLUE};
     hsv_blue.v = rgb_matrix_get_val();
     RGB rgb_blue = hsv_to_rgb(hsv_blue);
+    HSV hsv_green = {HSV_GREEN};
+    hsv_green.v = rgb_matrix_get_val();
+    RGB rgb_green = hsv_to_rgb(hsv_green);
+    HSV hsv_yellow = {HSV_YELLOW};
+    hsv_yellow.v = rgb_matrix_get_val();
+    RGB rgb_yellow = hsv_to_rgb(hsv_yellow);
+    HSV hsv_red = {HSV_RED};
+    hsv_red.v = rgb_matrix_get_val();
+    RGB rgb_red = hsv_to_rgb(hsv_red);
 
     if (IS_LAYER_ON_STATE(layer_state | default_layer_state, GMR)) {
         for (uint8_t row = 0; row < MATRIX_ROWS; ++row) {
@@ -275,8 +284,24 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
 
                 if (index >= led_min && index < led_max && index != NO_LED) { 
                     uint16_t keycode = keymap_key_to_keycode(STN, (keypos_t){col,row});
-                    if (keycode >= STN__MIN && keycode <= STN__MAX) {
+                    if (keycode >= STN_S1 && keycode <= STN_RL) {
+                        // Start consonants
                         rgb_matrix_set_color(index, rgb_blue.r, rgb_blue.g, rgb_blue.b);
+                    } else if (keycode == STN_ST1 || keycode == STN_ST2 || keycode == STN_ST3 || keycode == STN_ST4) {
+                        // Star
+                        rgb_matrix_set_color(index, rgb_green.r, rgb_green.g, rgb_green.b);
+                    } else if (keycode == STN_A || keycode == STN_O || keycode == STN_E || keycode == STN_U) {
+                        // Vowels
+                        rgb_matrix_set_color(index, rgb_blue.r, rgb_blue.g, rgb_blue.b);
+                    } else if ((keycode >= STN_FR && keycode <= STN_DR) || keycode == STN_ZR) {
+                        // End consonants
+                        rgb_matrix_set_color(index, rgb_blue.r, rgb_blue.g, rgb_blue.b);
+                    } else if ((keycode >= STN_N1 && keycode <= STN_N6) || (keycode >= STN_N7 && keycode <= STN_NC)) {
+                        // Number bar
+                        rgb_matrix_set_color(index, rgb_yellow.r, rgb_yellow.g, rgb_yellow.b);
+                    } else if (keycode >= STN__MIN && keycode <= STN__MAX) {
+                        // Other steno keys
+                        rgb_matrix_set_color(index, rgb_red.r, rgb_red.g, rgb_red.b);
                     }
                 }
             }
