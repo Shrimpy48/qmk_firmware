@@ -49,19 +49,19 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             KC_F1  , KC_F2  , KC_F3        , KC_F4      , KC_F5       , KC_F6   ,    KC_F7  , KC_F8    , KC_F9      , KC_F10 , KC_F11 , KC_F12 ,
             RGB_SPI, RGB_SAI, RGB_HUI      , RGB_VAI    , RGB_TOG     , RGB_MOD ,    KC_MNXT, KC_MPLY  , KC_VOLU    , KC_PSCR, KC_DEL , KC_BRIU,
             RGB_SPD, RGB_SAD, RGB_HUD      , RGB_VAD    , RGB_M_R     , RGB_RMOD,    KC_MPRV, KC_MUTE  , KC_VOLD    , KC_APP , KC_INS , KC_BRID,
-                                             DF(STN)    , KC_TRNS     , KC_TRNS ,    KC_TRNS, KC_TRNS  , DF(GMR)
+                                             TG(STN)    , KC_TRNS     , KC_TRNS ,    KC_TRNS, KC_TRNS  , TG(GMR)
             ),
 	[GMR] = LAYOUT_split_3x6_3(
             KC_TAB , KC_Q   , KC_W         , KC_E       , KC_R        , KC_T    ,    KC_Y   , KC_U     , KC_I       , KC_O   , KC_P   , KC_ESC ,
             KC_LSFT, KC_A   , KC_S         , KC_D       , KC_F        , KC_G    ,    KC_H   , KC_J     , KC_K       , KC_L   , KC_SCLN, KC_QUOT,
             KC_LCTL, KC_Z   , KC_X         , KC_C       , KC_V        , KC_B    ,    KC_N   , KC_M     , KC_COMM    , KC_DOT , KC_SLSH, KC_BSPC,
-                                             KC_LALT    , KC_SPC      , KC_LBRC ,    KC_ENT , KC_RBRC  , DF(DEF)
+                                             KC_LALT    , KC_SPC      , KC_LBRC ,    KC_ENT , KC_RBRC  , TG(GMR)
             ),
 	[STN] = LAYOUT_split_3x6_3(
             STN_N1 , STN_N2 , STN_N3       , STN_N4     , STN_N5      , STN_N6  ,    STN_N7 , STN_N8   , STN_N9     , STN_NA , STN_NB , STN_NC ,
             STN_FN , STN_S1 , STN_TL       , STN_PL     , STN_HL      , STN_ST1 ,    STN_ST3, STN_FR   , STN_PR     , STN_LR , STN_TR , STN_DR ,
             KC_NO  , STN_S2 , STN_KL       , STN_WL     , STN_RL      , STN_ST2 ,    STN_ST4, STN_RR   , STN_BR     , STN_GR , STN_SR , STN_ZR ,
-                                             DF(DEF)    , STN_A       , STN_O   ,    STN_E  , STN_U    , STN_PWR
+                                             TG(STN)    , STN_A       , STN_O   ,    STN_E  , STN_U    , STN_PWR
             )
 };
 
@@ -95,9 +95,10 @@ combo_t key_combos[] = {
 };
 
 layer_state_t layer_state_set_user(layer_state_t state) {
-    // Disable combos on steno layer
-    switch (get_highest_layer(layer_state | default_layer_state)) {
+    // Disable combos on steno and gamer layers
+    switch (get_highest_layer(state)) {
     case STN:
+    case GMR:
         combo_disable();
         break;
     default: //  for any other layers, or the default layer
@@ -264,7 +265,7 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
     hsv_red.v = rgb_matrix_get_val();
     RGB rgb_red = hsv_to_rgb(hsv_red);
 
-    if (IS_LAYER_ON_STATE(layer_state | default_layer_state, GMR)) {
+    if (IS_LAYER_ON_STATE(layer_state, GMR)) {
         for (uint8_t row = 0; row < MATRIX_ROWS; ++row) {
             for (uint8_t col = 0; col < MATRIX_COLS; ++col) {
                 uint8_t index = g_led_config.matrix_co[row][col];
@@ -277,7 +278,7 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
                 }
             }
         }
-    } else if (IS_LAYER_ON_STATE(layer_state | default_layer_state, STN)) {
+    } else if (IS_LAYER_ON_STATE(layer_state, STN)) {
         for (uint8_t row = 0; row < MATRIX_ROWS; ++row) {
             for (uint8_t col = 0; col < MATRIX_COLS; ++col) {
                 uint8_t index = g_led_config.matrix_co[row][col];
@@ -323,7 +324,7 @@ oled_rotation_t oled_init_user(oled_rotation_t rotation) {
 
 static void oled_render_layer_state(void) {
     oled_write_P(PSTR("Layer: "), false);
-    switch (get_highest_layer(layer_state | default_layer_state)) {
+    switch (get_highest_layer(layer_state)) {
         case DEF:
             oled_write_ln_P(PSTR("Default"), false);
             break;
