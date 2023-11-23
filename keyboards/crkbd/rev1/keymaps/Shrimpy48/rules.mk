@@ -1,7 +1,6 @@
 RGBLIGHT_ENABLE = no
 RGB_MATRIX_ENABLE = yes
-
-RGB_MATRIX_CUSTOM_USER = no
+RGB_MATRIX_CUSTOM_USER = yes
 
 MOUSEKEY_ENABLE = no
 
@@ -11,15 +10,17 @@ SWAP_HANDS_ENABLE = no
 
 COMBO_ENABLE = yes
 
-STENO_ENABLE = yes
+STENO_ENABLE = no
 STENO_PROTOCOL = txbolt
+
+MIDI_ENABLE = no
 
 NKRO_ENABLE = yes
 
-REPEAT_KEY_ENABLE = yes
+REPEAT_KEY_ENABLE = no
 
 LTO_ENABLE = yes
 
 # SRC += oneshot.c
 # SRC += swapper.c
-# SRC += snek.c
+SRC += snek.c

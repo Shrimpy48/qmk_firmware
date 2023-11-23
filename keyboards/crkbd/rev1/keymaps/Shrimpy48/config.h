@@ -36,6 +36,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #define FORCE_NKRO
 
+#define MIDI_ADVANCED
+
 // RGB strip effects
 #ifdef RGBLIGHT_ENABLE
     #define RGBLIGHT_EFFECT_BREATHING
@@ -80,10 +82,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // #    define ENABLE_RGB_MATRIX_TYPING_HEATMAP
 #    define ENABLE_RGB_MATRIX_SOLID_REACTIVE_MULTIWIDE
 
+#ifdef RGB_MATRIX_CUSTOM_USER
 // Sync the snake state between sides
-// #define SPLIT_TRANSACTION_IDS_USER USER_SYNC_SNEK
+#define SPLIT_TRANSACTION_IDS_USER USER_SYNC_SNEK
+#endif // RGB_MATRIX_CUSTOM_USER
 
 // Sync the layer state between sides (for RGB layer indicators)
 #define SPLIT_LAYER_STATE_ENABLE
 
-#endif
+#endif // RGB_MATRIX_ENABLE
