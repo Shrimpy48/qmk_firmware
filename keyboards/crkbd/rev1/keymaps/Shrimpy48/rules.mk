@@ -16,6 +16,8 @@ STENO_PROTOCOL = txbolt
 
 NKRO_ENABLE = yes
 
+REPEAT_KEY_ENABLE = yes
+
 LTO_ENABLE = yes
 
 # SRC += oneshot.c
