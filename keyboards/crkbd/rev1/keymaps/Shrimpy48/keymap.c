@@ -289,8 +289,6 @@ void housekeeping_task_user(void) {
 
 #endif // RGB_MATRIX_CUSTOM_USER
 
-#ifdef RGB_MATRIX_ENABLE
-
 // Layer indicator
 bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
     HSV hsv_blue = {HSV_BLUE};
