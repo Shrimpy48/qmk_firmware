@@ -398,14 +398,6 @@ static void oled_render_layer_state(void) {
     }
 }
 
-#ifdef STENO_ENABLE
-static const char PROGMEM steno_letters[23] = "#STKPWHRAO*EUFRPBLGTSDZ";
-
-static void oled_render_steno_state(void) {
-    oled_write_P(steno_letters, false);
-}
-#endif
-
 // static void oled_render_osm_state(void) {
 //     switch (os_shft_state) {
 //         case os_up_unqueued:
@@ -537,9 +529,6 @@ __attribute__((weak)) void oled_render_logo(void) {
 bool oled_task_user(void) {
     if (is_keyboard_master()) {
         oled_render_layer_state();
-        #ifdef STENO_ENABLE
-        oled_render_steno_state();
-        #endif
     } else {
         oled_render_logo();
     }
