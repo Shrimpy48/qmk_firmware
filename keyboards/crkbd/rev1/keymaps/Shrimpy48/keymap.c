@@ -42,18 +42,18 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	[DEF] = LAYOUT_split_3x6_3(
             QK_REP , KC_Q   , KC_W   , KC_F   , KC_P   , KC_B    ,    KC_J   , KC_L   , KC_U       , KC_Y        , KC_QUOT, QK_AREP,
             KC_ESC , KC_A   , KC_R   , KC_S   , KC_T   , KC_G    ,    KC_M   , KC_N   , KC_E       , KC_I        , KC_O   , KC_BSPC,
-            KC_TAB , KC_Z   , KC_X   , KC_C   , KC_D   , KC_V    ,    KC_K   , KC_H   , KC_COMM    , KC_DOT      , KC_SCLN, KC_ENT ,
+            KC_TAB , KC_Z   , KC_X   , KC_C   , KC_D   , KC_V    ,    KC_K   , KC_H   , KC_COMM    , KC_DOT      , KC_COLN, KC_ENT ,
                                        KC_WBAK, MO(SYM), KC_SPC  ,    KC_RSFT, MO(NUM), KC_WFWD
             ),
 	[SYM] = LAYOUT_split_3x6_3(
             KC_TRNS, KC_ESC , KC_LBRC, KC_LCBR, KC_LPRN, UK_TILD ,    KC_CIRC, KC_RPRN, KC_RCBR    , KC_RBRC     , KC_BSPC, KC_TRNS,
             KC_TRNS, KC_PLUS, KC_AMPR, KC_QUES, KC_EXLM, KC_DLR  ,    UK_HASH, KC_UNDS, KC_EQL     , KC_ASTR     , KC_MINS, KC_TRNS,
-            KC_TRNS, KC_TAB , UK_PIPE, UK_AT  , KC_SLSH, KC_PERC ,    UK_PND , UK_BSLS, KC_COLN    , KC_GRV      , KC_ENT , KC_TRNS,
+            KC_TRNS, KC_TAB , UK_PIPE, UK_AT  , KC_SLSH, KC_PERC ,    KC_GRV , UK_BSLS, UK_LABK    , UK_RABK     , KC_ENT , KC_TRNS,
                                        KC_TRNS, KC_TRNS, KC_TRNS ,    KC_TRNS, KC_TRNS, KC_TRNS
             ),
 	[NUM] = LAYOUT_split_3x6_3(
             KC_TRNS, KC_NO  , KC_7   , KC_8   , KC_9   , KC_ESC  ,    KC_BSPC, KC_NO  , RCS(KC_TAB), RCTL(KC_TAB), KC_NO  , KC_TRNS,
-            KC_TRNS, KC_NO  , KC_4   , KC_5   , KC_6   , KC_DOT  ,    KC_NO  , KC_LEFT, KC_DOWN    , KC_UP       , KC_RGHT, KC_TRNS,
+            KC_TRNS, KC_DOT , KC_4   , KC_5   , KC_6   , UK_PND  ,    KC_NO  , KC_LEFT, KC_DOWN    , KC_UP       , KC_RGHT, KC_TRNS,
             KC_TRNS, KC_0   , KC_1   , KC_2   , KC_3   , KC_TAB  ,    KC_ENT , KC_HOME, KC_PGDN    , KC_PGUP     , KC_END , KC_TRNS,
                                        KC_TRNS, KC_TRNS, KC_TRNS ,    KC_TRNS, KC_TRNS, KC_TRNS
             ),
@@ -95,10 +95,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 // shift-' = " like on US layout
 const key_override_t quote_key_override = ko_make_basic(MOD_MASK_SHIFT, UK_QUOT, UK_DQUO);
+// swapped ; and :
+const key_override_t colon_key_override = ko_make_basic(MOD_MASK_SHIFT, KC_COLN, KC_SCLN);
 
 // This globally defines all key overrides to be used
 const key_override_t **key_overrides = (const key_override_t *[]){
     &quote_key_override,
+    &colon_key_override,
     NULL // Null terminate the array of overrides!
 };
 
@@ -298,9 +301,6 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
     HSV hsv_green = {HSV_GREEN};
     hsv_green.v = rgb_matrix_get_val();
     RGB rgb_green = hsv_to_rgb(hsv_green);
-    HSV hsv_yellow = {HSV_YELLOW};
-    hsv_yellow.v = rgb_matrix_get_val();
-    RGB rgb_yellow = hsv_to_rgb(hsv_yellow);
     #endif // STENO_ENABLE
 
     if (IS_LAYER_ON_STATE(layer_state, GMR)) {
@@ -339,7 +339,6 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
                         rgb_matrix_set_color(index, rgb_blue.r, rgb_blue.g, rgb_blue.b);
                     } else if ((keycode >= STN_N1 && keycode <= STN_N6) || (keycode >= STN_N7 && keycode <= STN_NC)) {
                         // Number bar
-                        rgb_matrix_set_color(index, rgb_yellow.r, rgb_yellow.g, rgb_yellow.b);
                     } else if (keycode >= STN__MIN && keycode <= STN__MAX) {
                         // Other steno keys
                     }
