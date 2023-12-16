@@ -113,7 +113,7 @@ const uint16_t PROGMEM lg_combo[] = {KC_T, KC_D, COMBO_END};
 const uint16_t PROGMEM rg_combo[] = {KC_N, KC_H, COMBO_END};
 const uint16_t PROGMEM ra_combo[] = {KC_E, KC_COMM, COMBO_END};
 const uint16_t PROGMEM rc_combo[] = {KC_I, KC_DOT, COMBO_END};
-const uint16_t PROGMEM rs_combo[] = {KC_O, KC_SCLN, COMBO_END};
+const uint16_t PROGMEM rs_combo[] = {KC_O, KC_COLN, COMBO_END};
 combo_t key_combos[] = {
     COMBO(ls_combo, KC_LSFT),
     COMBO(lc_combo, KC_LCTL),
