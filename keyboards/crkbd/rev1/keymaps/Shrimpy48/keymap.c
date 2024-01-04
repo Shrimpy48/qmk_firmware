@@ -2,10 +2,6 @@
 
 #include "keymap_uk.h"
 
-#ifdef STENO_ENABLE
-#include "keymap_steno.h"
-#endif
-
 #ifdef RGB_MATRIX_CUSTOM_USER
 #include "transactions.h"
 #include "snek.h"
@@ -127,29 +123,6 @@ combo_t key_combos[] = {
 };
 #endif // COMBO_ENABLE
 
-layer_state_t layer_state_set_user(layer_state_t state) {
-#ifdef COMBO_ENABLE
-    // Disable combos on alternate layers
-    switch (get_highest_layer(state)) {
-#ifdef MIDI_ENABLE
-    case MID:
-#endif
-#ifdef STENO_ENABLE
-    case STN:
-#endif
-    case GMR:
-        combo_disable();
-        break;
-    default: //  for any other layers, or the default layer
-        combo_enable();
-        break;
-    }
-#endif // COMBO_ENABLE
-
-    // Holding both layer keys puts you in adjust layer
-    return update_tri_layer_state(state, NUM, SYM, FUN);
-}
-
 // // Callum's oneshot and swapper implementation
 // bool is_oneshot_cancel_key(uint16_t keycode) {
 //     switch (keycode) {
@@ -244,34 +217,6 @@ void update_snek(uint16_t keycode, keyrecord_t *record) {
     snake_state.snake_dir = turn_towards(press_pos, head_pos, tail_dir());
 }
 
-bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-    // update_swapper(
-    //     &sw_win_active, KC_LALT, KC_TAB, SW_WIN,
-    //     keycode, record
-    // );
-
-    // update_oneshot(
-    //     &os_shft_state, KC_LSFT, OS_SHFT,
-    //     keycode, record
-    // );
-    // update_oneshot(
-    //     &os_ctrl_state, KC_LCTL, OS_CTRL,
-    //     keycode, record
-    // );
-    // update_oneshot(
-    //     &os_alt_state, KC_LALT, OS_ALT,
-    //     keycode, record
-    // );
-    // update_oneshot(
-    //     &os_cmd_state, KC_LGUI, OS_GUI,
-    //     keycode, record
-    // );
-
-    update_snek(keycode, record);
-
-    return true;
-}
-
 void user_sync_snek_slave_handler(uint8_t in_buflen, const void* in_data, uint8_t out_buflen, void* out_data) {
     const snake_state_t *m2s = (const snake_state_t*)in_data;
     snake_state = *m2s;
@@ -342,11 +287,12 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
                     } else if ((keycode >= STN_FR && keycode <= STN_DR) || keycode == STN_ZR) {
                         // End consonants
                         rgb_matrix_set_color(index, rgb_blue.r, rgb_blue.g, rgb_blue.b);
-                    } else if ((keycode >= STN_N1 && keycode <= STN_N6) || (keycode >= STN_N7 && keycode <= STN_NC)) {
-                        // Number bar
-                    } else if (keycode >= STN__MIN && keycode <= STN__MAX) {
-                        // Other steno keys
                     }
+                    // else if ((keycode >= STN_N1 && keycode <= STN_N6) || (keycode >= STN_N7 && keycode <= STN_NC)) {
+                    //     // Number bar
+                    // } else if (keycode >= STN__MIN && keycode <= STN__MAX) {
+                    //     // Other steno keys
+                    // }
                 }
             }
         }
@@ -519,6 +465,76 @@ static void oled_render_layer_state(void) {
 //     }
 // }
 
+#ifdef STENO_TAPE
+#define STENO_TAPE_LEN 3
+// In reverse order because reasons
+static const char steno_chars[23] PROGMEM = {'Z', 'D', 'S', 'T', 'G', 'L', 'B', 'P', 'R', 'F', 'U', 'E', '*', 'O', 'A', 'R', 'H', 'W', 'P', 'K', 'T', 'S', '#'};
+
+uint32_t steno_tape[STENO_TAPE_LEN] = {0};
+
+uint32_t translate_chord(uint8_t chord[MAX_STROKE_SIZE]) {
+    uint32_t num = ((chord[0] & 0b00111111) > 0) || ((chord[5] & 0b01111110) > 0);
+    uint32_t s_l = (chord[1] & 0b01100000) > 0;
+    uint32_t tkpwh_l = chord[1] & 0b00011111;
+    uint32_t rao_l = (chord[2] & 0b01110000) >> 4;
+    uint32_t star = ((chord[2] & 0b00001100) > 0) || ((chord[3] & 0b00110000) > 0);
+    uint32_t eufr_r = chord[3] & 0b00001111;
+    uint32_t pblgtsd_r = chord[4] & 0b01111111;
+    uint32_t z_r = chord[5] & 0b00000001;
+    return z_r | (pblgtsd_r << 1) | (eufr_r << 8) | (star << 12) | (rao_l << 13) | (tkpwh_l << 16) | (s_l << 21) | (num << 22);
+}
+
+bool post_process_steno_user(uint16_t keycode, keyrecord_t *record, steno_mode_t mode, uint8_t chord[MAX_STROKE_SIZE], int8_t n_pressed_keys) {
+    // Only GeminiPR is supported because I'm lazy
+    if (mode != STENO_MODE_GEMINI) {
+        return true;
+    }
+
+    steno_tape[STENO_TAPE_LEN-1] = translate_chord(chord);
+
+    if (!record->event.pressed && n_pressed_keys < 1) {
+        // Advance the tape
+        for (uint8_t i = 0; i < STENO_TAPE_LEN-1; i++) {
+            steno_tape[i] = steno_tape[i+1];
+        }
+        steno_tape[STENO_TAPE_LEN-1] = 0;
+    }
+
+    return true;
+}
+
+void clear_steno_tape(void) {
+    for (uint8_t i = 0; i < STENO_TAPE_LEN; i++) {
+        steno_tape[i] = 0;
+    }
+}
+
+void oled_render_steno_tape(void) {
+    uint32_t one = 1;
+    for (uint8_t row = 0; row < STENO_TAPE_LEN; row++) { 
+        for (int32_t i = 22; i > 12; i--) {
+            if (steno_tape[row] & (one << i)) {
+                char steno_char = pgm_read_byte(&steno_chars[i]);
+                oled_write_char(steno_char, false);
+            }
+        }
+        if (steno_tape[row] & (one << 12)) {
+            char steno_char = pgm_read_byte(&steno_chars[12]);
+            oled_write_char(steno_char, false);
+        } else if (steno_tape[row]) {
+            oled_write_char('-', false);
+        }
+        for (int32_t i = 11; i >= 0; i--) {
+            if (steno_tape[row] & (one << i)) {
+                char steno_char = pgm_read_byte(&steno_chars[i]);
+                oled_write_char(steno_char, false);
+            }
+        }
+        oled_advance_page(true);
+    }
+}
+#endif // STENO_TAPE
+
 __attribute__((weak)) void oled_render_logo(void) {
     // clang-format off
     static const char PROGMEM crkbd_logo[] = {
@@ -533,6 +549,9 @@ __attribute__((weak)) void oled_render_logo(void) {
 bool oled_task_user(void) {
     if (is_keyboard_master()) {
         oled_render_layer_state();
+        #ifdef STENO_TAPE
+        oled_render_steno_tape();
+        #endif
     } else {
         oled_render_logo();
     }
@@ -540,3 +559,60 @@ bool oled_task_user(void) {
 }
 
 #endif // OLED_ENABLE
+
+#ifdef RGB_MATRIX_CUSTOM_USER
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    // update_swapper(
+    //     &sw_win_active, KC_LALT, KC_TAB, SW_WIN,
+    //     keycode, record
+    // );
+
+    // update_oneshot(
+    //     &os_shft_state, KC_LSFT, OS_SHFT,
+    //     keycode, record
+    // );
+    // update_oneshot(
+    //     &os_ctrl_state, KC_LCTL, OS_CTRL,
+    //     keycode, record
+    // );
+    // update_oneshot(
+    //     &os_alt_state, KC_LALT, OS_ALT,
+    //     keycode, record
+    // );
+    // update_oneshot(
+    //     &os_cmd_state, KC_LGUI, OS_GUI,
+    //     keycode, record
+    // );
+
+    update_snek(keycode, record);
+
+    return true;
+}
+#endif // RGB_MATRIX_CUSTOM_USER
+
+layer_state_t layer_state_set_user(layer_state_t state) {
+#ifdef COMBO_ENABLE
+    // Disable combos on alternate layers
+    switch (get_highest_layer(state)) {
+#ifdef MIDI_ENABLE
+    case MID:
+#endif
+#ifdef STENO_ENABLE
+    case STN:
+#endif
+    case GMR:
+        combo_disable();
+        break;
+    default: //  for any other layers, or the default layer
+        combo_enable();
+        break;
+    }
+#endif // COMBO_ENABLE
+
+#ifdef STENO_TAPE
+    clear_steno_tape();
+#endif
+
+    // Holding both layer keys puts you in adjust layer
+    return update_tri_layer_state(state, NUM, SYM, FUN);
+}

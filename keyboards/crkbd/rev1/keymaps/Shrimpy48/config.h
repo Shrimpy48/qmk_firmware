@@ -90,4 +90,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // Sync the layer state between sides (for RGB layer indicators)
 #define SPLIT_LAYER_STATE_ENABLE
 
+#ifdef STENO_ENABLE
+#define STENO_TAPE
+#endif
+
 #endif // RGB_MATRIX_ENABLE
