@@ -105,6 +105,7 @@ const key_override_t **key_overrides = (const key_override_t *[]){
     NULL // Null terminate the array of overrides!
 };
 
+#ifdef COMBO_ENABLE
 // Combo 2nd and 3rd row for modifiers
 const uint16_t PROGMEM ls_combo[] = {KC_A, KC_Z, COMBO_END};
 const uint16_t PROGMEM lc_combo[] = {KC_R, KC_X, COMBO_END};
@@ -124,8 +125,10 @@ combo_t key_combos[] = {
     COMBO(ra_combo, KC_LALT),
     COMBO(rg_combo, KC_LGUI),
 };
+#endif // COMBO_ENABLE
 
 layer_state_t layer_state_set_user(layer_state_t state) {
+#ifdef COMBO_ENABLE
     // Disable combos on alternate layers
     switch (get_highest_layer(state)) {
 #ifdef MIDI_ENABLE
@@ -141,6 +144,8 @@ layer_state_t layer_state_set_user(layer_state_t state) {
         combo_enable();
         break;
     }
+#endif // COMBO_ENABLE
+
     // Holding both layer keys puts you in adjust layer
     return update_tri_layer_state(state, NUM, SYM, FUN);
 }
