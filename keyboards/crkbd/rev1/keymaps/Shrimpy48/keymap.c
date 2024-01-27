@@ -11,17 +11,17 @@
 // #include "swapper.h"
 
 enum layers {
-    DEF,
+    STN,
+    CMK,
     SYM,
     NUM,
     FUN,
-    GMR,
-#ifdef STENO_ENABLE
-    STN,
-#endif
-#ifdef MIDI_ENABLE
-    MID,
-#endif
+    MOU,
+    ACT,
+    APP,
+    MAL,
+    MAR,
+    MAB,
 };
 
 // enum keycodes {
@@ -35,82 +35,99 @@ enum layers {
 // };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-	[DEF] = LAYOUT_split_3x6_3(
-            QK_REP , KC_Q   , KC_W   , KC_F   , KC_P   , KC_B    ,    KC_J   , KC_L   , KC_U       , KC_Y        , KC_QUOT, QK_AREP,
-            KC_ESC , KC_A   , KC_R   , KC_S   , KC_T   , KC_G    ,    KC_M   , KC_N   , KC_E       , KC_I        , KC_O   , KC_BSPC,
-            KC_TAB , KC_Z   , KC_X   , KC_C   , KC_D   , KC_V    ,    KC_K   , KC_H   , KC_COMM    , KC_DOT      , KC_COLN, KC_ENT ,
-                                       KC_WBAK, MO(SYM), KC_SPC  ,    KC_RSFT, MO(NUM), KC_WFWD
-            ),
-	[SYM] = LAYOUT_split_3x6_3(
-            KC_TRNS, KC_ESC , KC_LBRC, KC_LCBR, KC_LPRN, UK_TILD ,    KC_CIRC, KC_RPRN, KC_RCBR    , KC_RBRC     , KC_BSPC, KC_TRNS,
-            KC_TRNS, KC_PLUS, KC_AMPR, KC_QUES, KC_EXLM, KC_DLR  ,    UK_HASH, KC_UNDS, KC_EQL     , KC_ASTR     , KC_MINS, KC_TRNS,
-            KC_TRNS, KC_TAB , UK_PIPE, UK_AT  , KC_SLSH, KC_PERC ,    KC_GRV , UK_BSLS, UK_LABK    , UK_RABK     , KC_ENT , KC_TRNS,
-                                       KC_TRNS, KC_TRNS, KC_TRNS ,    KC_TRNS, KC_TRNS, KC_TRNS
-            ),
-	[NUM] = LAYOUT_split_3x6_3(
-            KC_TRNS, KC_NO  , KC_7   , KC_8   , KC_9   , KC_ESC  ,    KC_BSPC, KC_NO  , RCS(KC_TAB), RCTL(KC_TAB), KC_NO  , KC_TRNS,
-            KC_TRNS, KC_DOT , KC_4   , KC_5   , KC_6   , UK_PND  ,    KC_NO  , KC_LEFT, KC_DOWN    , KC_UP       , KC_RGHT, KC_TRNS,
-            KC_TRNS, KC_0   , KC_1   , KC_2   , KC_3   , KC_TAB  ,    KC_ENT , KC_HOME, KC_PGDN    , KC_PGUP     , KC_END , KC_TRNS,
-                                       KC_TRNS, KC_TRNS, KC_TRNS ,    KC_TRNS, KC_TRNS, KC_TRNS
-            ),
-	[FUN] = LAYOUT_split_3x6_3(
-            KC_F1  , KC_F2  , KC_F3  , KC_F4  , KC_F5  , KC_F6   ,    KC_F7  , KC_F8  , KC_F9      , KC_F10      , KC_F11 , KC_F12 ,
-            RGB_SPI, RGB_SAI, RGB_HUI, RGB_VAI, RGB_TOG, RGB_MOD ,    KC_MNXT, KC_MPLY, KC_VOLU    , KC_PSCR     , KC_DEL , KC_BRIU,
-            RGB_SPD, RGB_SAD, RGB_HUD, RGB_VAD, RGB_M_R, RGB_RMOD,    KC_MPRV, KC_MUTE, KC_VOLD    , KC_APP      , KC_INS , KC_BRID,
-#ifdef STENO_ENABLE
-                                       TG(STN), KC_TRNS, KC_TRNS ,    KC_TRNS, KC_TRNS, TG(GMR)
-#elif MIDI_ENABLE
-                                       TG(MID), KC_TRNS, KC_TRNS ,    KC_TRNS, KC_TRNS, TG(GMR)
-#else
-                                       KC_NO  , KC_TRNS, KC_TRNS ,    KC_TRNS, KC_TRNS, TG(GMR)
-#endif
-            ),
-	[GMR] = LAYOUT_split_3x6_3(
-            KC_TAB , KC_Q   , KC_W   , KC_E   , KC_R   , KC_T    ,    KC_Y   , KC_U   , KC_I       , KC_O        , KC_P   , KC_ESC ,
-            KC_LSFT, KC_A   , KC_S   , KC_D   , KC_F   , KC_G    ,    KC_H   , KC_J   , KC_K       , KC_L        , KC_SCLN, KC_QUOT,
-            KC_LCTL, KC_Z   , KC_X   , KC_C   , KC_V   , KC_B    ,    KC_N   , KC_M   , KC_COMM    , KC_DOT      , KC_SLSH, KC_BSPC,
-                                       KC_LALT, KC_SPC , KC_LBRC ,    KC_ENT , KC_RBRC, TG(GMR)
-            ),
-#ifdef STENO_ENABLE
 	[STN] = LAYOUT_split_3x6_3(
-            STN_N1 , STN_N2 , STN_N3 , STN_N4 , STN_N5 , STN_N6  ,    STN_N7 , STN_N8 , STN_N9     , STN_NA      , STN_NB , STN_NC ,
-            STN_FN , STN_S1 , STN_TL , STN_PL , STN_HL , STN_ST1 ,    STN_ST3, STN_FR , STN_PR     , STN_LR      , STN_TR , STN_DR ,
-            KC_NO  , STN_S2 , STN_KL , STN_WL , STN_RL , STN_ST2 ,    STN_ST4, STN_RR , STN_BR     , STN_GR      , STN_SR , STN_ZR ,
-                                       TG(STN), STN_A  , STN_O   ,    STN_E  , STN_U  , STN_PWR
-            ),
-#endif
-#ifdef MIDI_ENABLE
-	[MID] = LAYOUT_split_3x6_3(
-            MI_C   , MI_Cs  , MI_D   , MI_Ds  , MI_E   , MI_F   ,    MI_Fs   , MI_G   , MI_Gs      , MI_A        , MI_As  , MI_B   ,
-            MI_C   , MI_Cs  , MI_D   , MI_Ds  , MI_E   , MI_F   ,    MI_Fs   , MI_G   , MI_Gs      , MI_A        , MI_As  , MI_B   ,
-            MI_C   , MI_Cs  , MI_D   , MI_Ds  , MI_E   , MI_F   ,    MI_Fs   , MI_G   , MI_Gs      , MI_A        , MI_As  , MI_B   ,
-                                       TG(MID), KC_NO  , MI_SOFT,    MI_SUST , KC_NO  , KC_NO 
-            ),
-#endif
+        STN_N1 , STN_N2 , STN_N3 , STN_N4 , STN_N5 , STN_N6 ,    STN_N7 , STN_N8 , STN_N9 , STN_NA , STN_NB , STN_NC ,
+        STN_FN , STN_S1 , STN_TL , STN_PL , STN_HL , STN_ST1,    STN_ST3, STN_FR , STN_PR , STN_LR , STN_TR , STN_DR ,
+        XXXXXXX, STN_S2 , STN_KL , STN_WL , STN_RL , STN_ST2,    STN_ST4, STN_RR , STN_BR , STN_GR , STN_SR , STN_ZR ,
+                                   STN_A  , STN_O  , TO(CMK),    TO(CMK), STN_E  , STN_U
+        ),
+	[CMK] = LAYOUT_split_3x6_3(
+        TO(STN), UK_Q   , UK_W   , UK_F   , UK_P   , UK_B   ,    UK_J   , UK_L   , UK_U   , UK_Y   , UK_Z   , TO(STN),
+        UK_QUOT, UK_A   , UK_R   , UK_S   , UK_T   , UK_G   ,    UK_M   , UK_N   , UK_E   , UK_I   , UK_O   , UK_MINS,
+        KC_DEL , QK_REP , UK_X   , UK_C   , UK_D   , UK_V   ,    UK_K   , UK_H   , UK_COMM, UK_DOT , QK_REP , KC_BSPC,
+                    LT(MOU,KC_UNDO), LT(SYM,KC_TAB), KC_SPC ,    SC_SENT, LT(NUM,KC_ESC), LT(ACT,KC_AGIN)
+        ),
+	[SYM] = LAYOUT_split_3x6_3(
+        _______, UK_LABK, UK_LBRC, UK_LCBR, UK_LPRN, UK_CIRC,    UK_DLR , UK_RPRN, UK_RCBR, UK_RBRC, UK_RABK, _______,
+        UK_NOT , UK_BSLS, UK_SCLN, UK_COLN, UK_EQL , UK_TILD,    UK_HASH, UK_MINS, UK_PLUS, UK_ASTR, UK_SLSH, UK_PND ,
+        _______, _______, UK_GRV , UK_DQUO, UK_QUOT, UK_AT  ,    UK_PERC, UK_UNDS, UK_PIPE, UK_AMPR, _______, _______,
+                                   _______, XXXXXXX, _______,    _______, _______, _______
+        ),
+	[NUM] = LAYOUT_split_3x6_3(
+        _______, UK_HASH, UK_7   , UK_8   , UK_9   , UK_COLN,    UK_HASH, UK_MINS, UK_PLUS, UK_ASTR, UK_SLSH, _______,
+        KC_PERC, KC_0   , KC_4   , KC_5   , KC_6   , KC_DOT ,    KC_UNDS, KC_LEFT, KC_DOWN, KC_UP  , KC_RGHT, UK_DLR ,
+        _______, _______, UK_1   , UK_2   , UK_3   , UK_COMM,    UK_QUOT, KC_HOME, KC_PGDN, KC_PGUP, KC_END, _______,
+                                   _______, _______, _______,    _______, XXXXXXX, _______
+        ),
+	[FUN] = LAYOUT_split_3x6_3(
+        KC_F1  , KC_F2  , KC_F3  , KC_F4  , KC_F5  , KC_F6  ,    KC_F7  , KC_F8  , KC_F9  , KC_F10 , KC_F11 , KC_F12 ,
+        RGB_HUI, RGB_SAI, RGB_VAI, RGB_SPI, RGB_TOG, RGB_MOD,    KC_MNXT, KC_MPLY, KC_VOLU, KC_BRIU, XXXXXXX, XXXXXXX,
+        RGB_HUD, RGB_SAD, RGB_VAD, RGB_SPD, RGB_M_R, RGB_RMOD,   KC_MPRV, KC_MUTE, KC_VOLD, KC_BRID, XXXXXXX, XXXXXXX,
+                                    _______, XXXXXXX, _______,   _______, XXXXXXX, _______
+        ),
+	[MOU] = LAYOUT_split_3x6_3(
+        KC_ACL2, KC_BTN5, KC_BTN1, KC_BTN2, KC_BTN3, KC_BTN4,    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+        KC_ACL1, KC_MS_L, KC_MS_U, KC_MS_D, KC_MS_R, XXXXXXX,    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+        KC_ACL0, KC_WH_L, KC_WH_U, KC_WH_D, KC_WH_R, QK_BOOT,    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+                                   XXXXXXX, _______, _______,    _______, _______, _______
+        ),
+	[ACT] = LAYOUT_split_3x6_3(
+        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,    KC_PWR , KC_STOP, KC_INS , KC_PSCR, KC_PAUS, KC_SCRL,
+        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,    KC_SLEP, KC_COPY, KC_PSTE, KC_CUT , KC_SLCT, KC_CAPS,
+        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,    QK_BOOT, KC_FIND, KC_EXEC, KC_APP , KC_HELP, KC_NUM ,
+                                   _______, _______, _______,    _______, _______, XXXXXXX
+        ),
+	[APP] = LAYOUT_split_3x6_3(
+        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,    XXXXXXX, KC_CALC, KC_MAIL, KC_MSEL, KC_MYCM, XXXXXXX,
+        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,    XXXXXXX, KC_WHOM, KC_WBAK, KC_WFWD, KC_WSCH, XXXXXXX,
+        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,    XXXXXXX, KC_WFAV, KC_WREF, KC_WSTP, KC_MENU, XXXXXXX,
+                                   XXXXXXX, _______, _______,    _______, _______, XXXXXXX
+        ),
+	[MAL] = LAYOUT_split_3x6_3(
+        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+                                   XXXXXXX, XXXXXXX, _______,    _______, _______, _______
+        ),
+	[MAR] = LAYOUT_split_3x6_3(
+        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+                                   _______, _______, _______,    _______, XXXXXXX, XXXXXXX
+        ),
+	[MAB] = LAYOUT_split_3x6_3(
+        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+                                   XXXXXXX, XXXXXXX, _______,    _______, XXXXXXX, XXXXXXX
+        )
 };
 
 // shift-' = " like on US layout
 const key_override_t quote_key_override = ko_make_basic(MOD_MASK_SHIFT, UK_QUOT, UK_DQUO);
-// swapped ; and :
-const key_override_t colon_key_override = ko_make_basic(MOD_MASK_SHIFT, KC_COLN, KC_SCLN);
+// shift-, = ?
+const key_override_t ques_key_override = ko_make_basic(MOD_MASK_SHIFT, UK_COMM, UK_QUES);
+// shift-. = !
+const key_override_t exlm_key_override = ko_make_basic(MOD_MASK_SHIFT, UK_DOT, UK_EXLM);
 
 // This globally defines all key overrides to be used
 const key_override_t **key_overrides = (const key_override_t *[]){
     &quote_key_override,
-    &colon_key_override,
+    &ques_key_override,
+    &exlm_key_override,
     NULL // Null terminate the array of overrides!
 };
 
 #ifdef COMBO_ENABLE
 // Combo 2nd and 3rd row for modifiers
-const uint16_t PROGMEM ls_combo[] = {KC_A, KC_Z, COMBO_END};
+const uint16_t PROGMEM ls_combo[] = {KC_A, QK_REP, COMBO_END};
 const uint16_t PROGMEM lc_combo[] = {KC_R, KC_X, COMBO_END};
 const uint16_t PROGMEM la_combo[] = {KC_S, KC_C, COMBO_END};
 const uint16_t PROGMEM lg_combo[] = {KC_T, KC_D, COMBO_END};
 const uint16_t PROGMEM rg_combo[] = {KC_N, KC_H, COMBO_END};
 const uint16_t PROGMEM ra_combo[] = {KC_E, KC_COMM, COMBO_END};
 const uint16_t PROGMEM rc_combo[] = {KC_I, KC_DOT, COMBO_END};
-const uint16_t PROGMEM rs_combo[] = {KC_O, KC_COLN, COMBO_END};
+const uint16_t PROGMEM rs_combo[] = {KC_O, QK_REP, COMBO_END};
 combo_t key_combos[] = {
     COMBO(ls_combo, KC_LSFT),
     COMBO(lc_combo, KC_LCTL),
@@ -241,67 +258,6 @@ void housekeeping_task_user(void) {
 }
 
 #endif // RGB_MATRIX_CUSTOM_USER
-
-// Layer indicator
-bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
-    HSV hsv_blue = {HSV_BLUE};
-    hsv_blue.v = rgb_matrix_get_val();
-    RGB rgb_blue = hsv_to_rgb(hsv_blue);
-    #ifdef STENO_ENABLE
-    HSV hsv_green = {HSV_GREEN};
-    hsv_green.v = rgb_matrix_get_val();
-    RGB rgb_green = hsv_to_rgb(hsv_green);
-    #endif // STENO_ENABLE
-
-    if (IS_LAYER_ON_STATE(layer_state, GMR)) {
-        for (uint8_t row = 0; row < MATRIX_ROWS; ++row) {
-            for (uint8_t col = 0; col < MATRIX_COLS; ++col) {
-                uint8_t index = g_led_config.matrix_co[row][col];
-
-                if (index >= led_min && index < led_max && index != NO_LED) { 
-                    uint16_t keycode = keymap_key_to_keycode(GMR, (keypos_t){col,row});
-                    if (keycode == KC_W || keycode == KC_A || keycode == KC_S || keycode == KC_D) {
-                        rgb_matrix_set_color(index, rgb_blue.r, rgb_blue.g, rgb_blue.b);
-                    }
-                }
-            }
-        }
-    } 
-    #ifdef STENO_ENABLE
-    else if (IS_LAYER_ON_STATE(layer_state, STN)) {
-        for (uint8_t row = 0; row < MATRIX_ROWS; ++row) {
-            for (uint8_t col = 0; col < MATRIX_COLS; ++col) {
-                uint8_t index = g_led_config.matrix_co[row][col];
-
-                if (index >= led_min && index < led_max && index != NO_LED) { 
-                    uint16_t keycode = keymap_key_to_keycode(STN, (keypos_t){col,row});
-                    if (keycode >= STN_S1 && keycode <= STN_RL) {
-                        // Start consonants
-                        rgb_matrix_set_color(index, rgb_blue.r, rgb_blue.g, rgb_blue.b);
-                    } else if (keycode == STN_ST1 || keycode == STN_ST2 || keycode == STN_ST3 || keycode == STN_ST4) {
-                        // Star
-                        rgb_matrix_set_color(index, rgb_green.r, rgb_green.g, rgb_green.b);
-                    } else if (keycode == STN_A || keycode == STN_O || keycode == STN_E || keycode == STN_U) {
-                        // Vowels
-                        rgb_matrix_set_color(index, rgb_blue.r, rgb_blue.g, rgb_blue.b);
-                    } else if ((keycode >= STN_FR && keycode <= STN_DR) || keycode == STN_ZR) {
-                        // End consonants
-                        rgb_matrix_set_color(index, rgb_blue.r, rgb_blue.g, rgb_blue.b);
-                    }
-                    // else if ((keycode >= STN_N1 && keycode <= STN_N6) || (keycode >= STN_N7 && keycode <= STN_NC)) {
-                    //     // Number bar
-                    // } else if (keycode >= STN__MIN && keycode <= STN__MAX) {
-                    //     // Other steno keys
-                    // }
-                }
-            }
-        }
-    }
-    #endif // STENO_ENABLE
-
-    return false;
-}
-
 #endif // RGB_MATRIX_ENABLE
 
 // OLED config
@@ -317,31 +273,39 @@ oled_rotation_t oled_init_user(oled_rotation_t rotation) {
 static void oled_render_layer_state(void) {
     oled_write_P(PSTR("Layer: "), false);
     switch (get_highest_layer(layer_state)) {
-        case DEF:
-            oled_write_ln_P(PSTR("Default"), false);
+        case STN:
+            oled_write_ln_P(PSTR("Steno"), false);
             break;
-        case NUM:
-            oled_write_ln_P(PSTR("Num/Nav"), false);
+        case CMK:
+            oled_write_ln_P(PSTR("Colemak"), false);
             break;
         case SYM:
             oled_write_ln_P(PSTR("Symbol"), false);
             break;
+        case NUM:
+            oled_write_ln_P(PSTR("Number"), false);
+            break;
         case FUN:
             oled_write_ln_P(PSTR("Function"), false);
             break;
-        case GMR:
-            oled_write_ln_P(PSTR("Gamer"), false);
+        case MOU:
+            oled_write_ln_P(PSTR("Mouse"), false);
             break;
-        #ifdef STENO_ENABLE
-        case STN:
-            oled_write_ln_P(PSTR("Steno"), false);
+        case ACT:
+            oled_write_ln_P(PSTR("Action"), false);
             break;
-        #endif
-        #ifdef MIDI_ENABLE
-        case MID:
-            oled_write_ln_P(PSTR("MIDI"), false);
+        case APP:
+            oled_write_ln_P(PSTR("App"), false);
             break;
-        #endif
+        case MAL:
+            oled_write_ln_P(PSTR("Macro L"), false);
+            break;
+        case MAR:
+            oled_write_ln_P(PSTR("Macro R"), false);
+            break;
+        case MAB:
+            oled_write_ln_P(PSTR("Macro B"), false);
+            break;
         default:
             oled_write_ln_P(PSTR("Undefined"), false);
             break;
@@ -511,7 +475,7 @@ void clear_steno_tape(void) {
 
 void oled_render_steno_tape(void) {
     uint32_t one = 1;
-    for (uint8_t row = 0; row < STENO_TAPE_LEN; row++) { 
+    for (uint8_t row = 0; row < STENO_TAPE_LEN; row++) {
         for (int32_t i = 22; i > 12; i--) {
             if (steno_tape[row] & (one << i)) {
                 char steno_char = pgm_read_byte(&steno_chars[i]);
@@ -592,18 +556,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
 layer_state_t layer_state_set_user(layer_state_t state) {
 #ifdef COMBO_ENABLE
-    // Disable combos on alternate layers
+    // Disable combos on steno layer
     switch (get_highest_layer(state)) {
-#ifdef MIDI_ENABLE
-    case MID:
-#endif
-#ifdef STENO_ENABLE
     case STN:
-#endif
-    case GMR:
         combo_disable();
         break;
-    default: //  for any other layers, or the default layer
+    default: //  for any other layers
         combo_enable();
         break;
     }
@@ -613,6 +571,15 @@ layer_state_t layer_state_set_user(layer_state_t state) {
     clear_steno_tape();
 #endif
 
-    // Holding both layer keys puts you in adjust layer
-    return update_tri_layer_state(state, NUM, SYM, FUN);
+    // Holding both inner layer keys puts you in function layer
+    state = update_tri_layer_state(state, NUM, SYM, FUN);
+    // Holding both outer layer keys puts you in application layer
+    state = update_tri_layer_state(state, MOU, ACT, APP);
+    // Holding both left layer keys puts you in left macro layer
+    state = update_tri_layer_state(state, MOU, SYM, MAL);
+    // Holding both right layer keys puts you in right macro layer
+    state = update_tri_layer_state(state, NUM, ACT, MAR);
+    // Holding all layer keys puts you in third macro layer
+    state = update_tri_layer_state(state, MAL, MAR, MAB);
+    return state;
 }
