@@ -43,20 +43,20 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         ),
 	[CMK] = LAYOUT_split_3x6_3(
         TO(STN), UK_Q   , UK_W   , UK_F   , UK_P   , UK_B   ,    UK_J   , UK_L   , UK_U   , UK_Y   , UK_Z   , TO(STN),
-        UK_QUOT, UK_A   , UK_R   , UK_S   , UK_T   , UK_G   ,    UK_M   , UK_N   , UK_E   , UK_I   , UK_O   , UK_MINS,
-        KC_DEL , QK_REP , UK_X   , UK_C   , UK_D   , UK_V   ,    UK_K   , UK_H   , UK_COMM, UK_DOT , QK_REP , KC_BSPC,
-                    LT(MOU,KC_UNDO), LT(SYM,KC_TAB), KC_SPC ,    SC_SENT, LT(NUM,KC_ESC), LT(ACT,KC_AGIN)
+        QK_REP , UK_A   , UK_R   , UK_S   , UK_T   , UK_G   ,    UK_M   , UK_N   , UK_E   , UK_I   , UK_O   , QK_REP ,
+        KC_DEL , UK_QUOT, UK_X   , UK_C   , UK_D   , UK_V   ,    UK_K   , UK_H   , UK_COMM, UK_DOT , UK_COLN, KC_BSPC,
+                    LT(MOU,KC_UNDO), LT(SYM,KC_TAB), KC_SPC ,    MT(MOD_RSFT,KC_ENT), LT(NUM,KC_ESC), LT(ACT,KC_AGIN)
         ),
 	[SYM] = LAYOUT_split_3x6_3(
         _______, UK_LABK, UK_LBRC, UK_LCBR, UK_LPRN, UK_CIRC,    UK_DLR , UK_RPRN, UK_RCBR, UK_RBRC, UK_RABK, _______,
-        UK_NOT , UK_BSLS, UK_SCLN, UK_COLN, UK_EQL , UK_TILD,    UK_HASH, UK_MINS, UK_PLUS, UK_ASTR, UK_SLSH, UK_PND ,
-        _______, _______, UK_GRV , UK_DQUO, UK_QUOT, UK_AT  ,    UK_PERC, UK_UNDS, UK_PIPE, UK_AMPR, _______, _______,
+        _______, UK_PLUS, UK_AMPR, UK_QUES, UK_EXLM, UK_TILD,    UK_HASH, UK_UNDS, UK_EQL , UK_ASTR, UK_MINS, _______,
+        _______, UK_NOT , UK_PIPE, UK_AT  , UK_SLSH, UK_PERC,    UK_GRV , UK_BSLS, UK_LABK, UK_RABK, UK_PND , _______,
                                    _______, XXXXXXX, _______,    _______, _______, _______
         ),
 	[NUM] = LAYOUT_split_3x6_3(
-        _______, UK_HASH, UK_7   , UK_8   , UK_9   , UK_COLN,    UK_HASH, UK_MINS, UK_PLUS, UK_ASTR, UK_SLSH, _______,
-        KC_PERC, KC_0   , KC_4   , KC_5   , KC_6   , KC_DOT ,    KC_UNDS, KC_LEFT, KC_DOWN, KC_UP  , KC_RGHT, UK_DLR ,
-        _______, _______, UK_1   , UK_2   , UK_3   , UK_COMM,    UK_QUOT, KC_HOME, KC_PGDN, KC_PGUP, KC_END, _______,
+        _______, UK_COMM, UK_7   , UK_8   , UK_9   , UK_DLR ,    UK_HASH, UK_MINS, UK_PLUS, UK_ASTR, UK_SLSH, _______,
+        _______, KC_DOT , KC_4   , KC_5   , KC_6   , UK_PND ,    KC_UNDS, KC_LEFT, KC_DOWN, KC_UP  , KC_RGHT, _______,
+        _______, KC_0   , UK_1   , UK_2   , UK_3   , KC_PERC,    UK_QUOT, KC_HOME, KC_PGDN, KC_PGUP, KC_END , _______,
                                    _______, _______, _______,    _______, XXXXXXX, _______
         ),
 	[FUN] = LAYOUT_split_3x6_3(
@@ -105,29 +105,26 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 // shift-' = " like on US layout
 const key_override_t quote_key_override = ko_make_basic(MOD_MASK_SHIFT, UK_QUOT, UK_DQUO);
-// shift-, = ?
-const key_override_t ques_key_override = ko_make_basic(MOD_MASK_SHIFT, UK_COMM, UK_QUES);
-// shift-. = !
-const key_override_t exlm_key_override = ko_make_basic(MOD_MASK_SHIFT, UK_DOT, UK_EXLM);
+// swap : and ;
+const key_override_t scln_key_override = ko_make_basic(MOD_MASK_SHIFT, UK_COLN, UK_SCLN);
 
 // This globally defines all key overrides to be used
 const key_override_t **key_overrides = (const key_override_t *[]){
     &quote_key_override,
-    &ques_key_override,
-    &exlm_key_override,
+    &scln_key_override,
     NULL // Null terminate the array of overrides!
 };
 
 #ifdef COMBO_ENABLE
 // Combo 2nd and 3rd row for modifiers
-const uint16_t PROGMEM ls_combo[] = {KC_A, QK_REP, COMBO_END};
+const uint16_t PROGMEM ls_combo[] = {KC_A, UK_QUOT, COMBO_END};
 const uint16_t PROGMEM lc_combo[] = {KC_R, KC_X, COMBO_END};
 const uint16_t PROGMEM la_combo[] = {KC_S, KC_C, COMBO_END};
 const uint16_t PROGMEM lg_combo[] = {KC_T, KC_D, COMBO_END};
 const uint16_t PROGMEM rg_combo[] = {KC_N, KC_H, COMBO_END};
 const uint16_t PROGMEM ra_combo[] = {KC_E, KC_COMM, COMBO_END};
 const uint16_t PROGMEM rc_combo[] = {KC_I, KC_DOT, COMBO_END};
-const uint16_t PROGMEM rs_combo[] = {KC_O, QK_REP, COMBO_END};
+const uint16_t PROGMEM rs_combo[] = {KC_O, UK_COLN, COMBO_END};
 combo_t key_combos[] = {
     COMBO(ls_combo, KC_LSFT),
     COMBO(lc_combo, KC_LCTL),
