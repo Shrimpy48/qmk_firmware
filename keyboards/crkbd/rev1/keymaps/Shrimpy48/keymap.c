@@ -1,6 +1,9 @@
 #include QMK_KEYBOARD_H
 
 #include "keymap_uk.h"
+#include "sendstring_uk.h"
+
+#include "/home/philip/python/steno/rust/rust_steno_engine.h"
 
 #ifdef RGB_MATRIX_CUSTOM_USER
 #include "transactions.h"
@@ -24,21 +27,15 @@ enum layers {
     MAB,
 };
 
-// enum keycodes {
-//     // Callum's oneshot mod implementation with no timers.
-//     OS_SHFT = SAFE_RANGE,
-//     OS_CTRL,
-//     OS_ALT,
-//     OS_GUI,
-
-//     SW_WIN,  // Switch to next window         (alt-tab)
-// };
+enum keycodes {
+    OB_TOG = SAFE_RANGE,
+};
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	[STN] = LAYOUT_split_3x6_3(
         STN_N1 , STN_N2 , STN_N3 , STN_N4 , STN_N5 , STN_N6 ,    STN_N7 , STN_N8 , STN_N9 , STN_NA , STN_NB , STN_NC ,
         STN_FN , STN_S1 , STN_TL , STN_PL , STN_HL , STN_ST1,    STN_ST3, STN_FR , STN_PR , STN_LR , STN_TR , STN_DR ,
-        XXXXXXX, STN_S2 , STN_KL , STN_WL , STN_RL , STN_ST2,    STN_ST4, STN_RR , STN_BR , STN_GR , STN_SR , STN_ZR ,
+        OB_TOG , STN_S2 , STN_KL , STN_WL , STN_RL , STN_ST2,    STN_ST4, STN_RR , STN_BR , STN_GR , STN_SR , STN_ZR ,
                                    STN_A  , STN_O  , TO(CMK),    TO(CMK), STN_E  , STN_U
         ),
 	[CMK] = LAYOUT_split_3x6_3(
@@ -170,6 +167,8 @@ combo_t key_combos[] = {
 // oneshot_state os_alt_state = os_up_unqueued;
 // oneshot_state os_cmd_state = os_up_unqueued;
 
+static bool steno_onboard = false;
+
 #ifdef RGB_MATRIX_ENABLE
 
 #ifdef RGB_MATRIX_CUSTOM_USER
@@ -268,6 +267,11 @@ oled_rotation_t oled_init_user(oled_rotation_t rotation) {
 }
 
 static void oled_render_layer_state(void) {
+    if (steno_onboard) {
+        oled_write_P(PSTR("[OB] "), false);
+    } else {
+        oled_write_P(PSTR("     "), false);
+    }
     oled_write_P(PSTR("Layer: "), false);
     switch (get_highest_layer(layer_state)) {
         case STN:
@@ -496,6 +500,21 @@ void oled_render_steno_tape(void) {
 }
 #endif // STENO_TAPE
 
+bool send_steno_chord_user(steno_mode_t mode, uint8_t chord[MAX_STROKE_SIZE]) {
+    if (!steno_onboard) {
+        return true;
+    }
+    HandleStrokeResult res = handle_stroke(chord);
+    for (uint16_t i = 0; i < res.n_delete; i++) {
+        tap_code(KC_BSPC);
+    }
+    send_string(res.output_1);
+    if (res.output_2 != NULL) {
+        send_string(res.output_2);
+    }
+    return false;
+}
+
 __attribute__((weak)) void oled_render_logo(void) {
     // clang-format off
     static const char PROGMEM crkbd_logo[] = {
@@ -544,6 +563,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     //     &os_cmd_state, KC_LGUI, OS_GUI,
     //     keycode, record
     // );
+
+    if (keycode == OB_TOG && record->event.pressed) {
+        steno_onboard = !steno_onboard;
+    }
 
     update_snek(keycode, record);
 
