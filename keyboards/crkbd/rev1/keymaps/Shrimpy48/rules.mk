@@ -10,6 +10,8 @@ SWAP_HANDS_ENABLE = no
 
 COMBO_ENABLE = yes
 
+BOOTMAGIC_ENABLE = no
+
 STENO_ENABLE = yes
 STENO_PROTOCOL = geminipr
 
@@ -25,4 +27,3 @@ LTO_ENABLE = yes
 # SRC += swapper.c
 SRC += snek.c
 LIB_SRC += /home/philip/python/steno/rust/target/thumbv6m-none-eabi/release/libsteno_engine.a
-#

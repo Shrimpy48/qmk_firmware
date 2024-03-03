@@ -167,7 +167,7 @@ combo_t key_combos[] = {
 // oneshot_state os_alt_state = os_up_unqueued;
 // oneshot_state os_cmd_state = os_up_unqueued;
 
-static bool steno_onboard = false;
+static bool steno_onboard = true;
 
 #ifdef RGB_MATRIX_ENABLE
 
@@ -267,15 +267,15 @@ oled_rotation_t oled_init_user(oled_rotation_t rotation) {
 }
 
 static void oled_render_layer_state(void) {
-    if (steno_onboard) {
-        oled_write_P(PSTR("[OB] "), false);
-    } else {
-        oled_write_P(PSTR("     "), false);
-    }
     oled_write_P(PSTR("Layer: "), false);
     switch (get_highest_layer(layer_state)) {
         case STN:
-            oled_write_ln_P(PSTR("Steno"), false);
+            oled_write_P(PSTR("Steno"), false);
+            if (steno_onboard) {
+                oled_write_ln_P(PSTR(" [OB]"), false);
+            } else {
+                oled_advance_page(true);
+            }
             break;
         case CMK:
             oled_write_ln_P(PSTR("Colemak"), false);
@@ -504,14 +504,7 @@ bool send_steno_chord_user(steno_mode_t mode, uint8_t chord[MAX_STROKE_SIZE]) {
     if (!steno_onboard) {
         return true;
     }
-    HandleStrokeResult res = handle_stroke(chord);
-    for (uint16_t i = 0; i < res.n_delete; i++) {
-        tap_code(KC_BSPC);
-    }
-    send_string(res.output_1);
-    if (res.output_2 != NULL) {
-        send_string(res.output_2);
-    }
+    handle_chord(chord);
     return false;
 }
 
