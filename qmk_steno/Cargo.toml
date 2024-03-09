@@ -1,0 +1,24 @@
+[package]
+name = "qmk_steno"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+crate-type = ["staticlib"]
+
+[profile.release]
+lto = true
+codegen-units = 1
+
+[features]
+std = []
+default = []
+
+[dependencies]
+steno_engine = { path = "/home/philip/rust/steno_engine", default_features = false }
+
+[build-dependencies]
+cbindgen = "0.26.0"
+steno_engine = { path = "/home/philip/rust/steno_engine", features = ["std"] }

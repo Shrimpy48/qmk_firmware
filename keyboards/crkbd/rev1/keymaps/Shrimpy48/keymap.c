@@ -8,7 +8,7 @@
 #include "snek.h"
 #endif // RGB_MATRIX_CUSTOM_USER
 
-#include "/home/philip/python/steno/rust/rust_steno_engine.h"
+#include "qmk_steno/qmk_steno.h"
 
 // --- Keymap ---
 
