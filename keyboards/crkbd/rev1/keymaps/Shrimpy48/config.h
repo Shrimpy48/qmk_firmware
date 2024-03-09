@@ -83,17 +83,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // #    define ENABLE_RGB_MATRIX_PIXEL_RAIN
 // #    define ENABLE_RGB_MATRIX_TYPING_HEATMAP
 #    define ENABLE_RGB_MATRIX_SOLID_REACTIVE_MULTIWIDE
+#endif // RGB_MATRIX_ENABLE
 
-#ifdef RGB_MATRIX_CUSTOM_USER
-// Sync the snake state between sides
-#define SPLIT_TRANSACTION_IDS_USER USER_SYNC_SNEK
-#endif // RGB_MATRIX_CUSTOM_USER
+#define SPLIT_TRANSACTION_IDS_USER USER_SYNC_SNEK, USER_SYNC_OS
 
 // Sync the layer state between sides (for RGB layer indicators)
 #define SPLIT_LAYER_STATE_ENABLE
 
-// #ifdef STENO_ENABLE
 #define STENO_TAPE
-// #endif
 
-#endif // RGB_MATRIX_ENABLE
