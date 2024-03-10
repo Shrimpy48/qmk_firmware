@@ -44,7 +44,7 @@ fn main() {
         generate::UnpackedDictionary::from_json(json_paths).expect("Unable to create dictionary");
     let d = upd.pack();
     let mut f = std::fs::File::create("nodes.in").unwrap();
-    f.write(d.nodes()).unwrap();
+    f.write_all(d.nodes()).unwrap();
     let mut f = std::fs::File::create("translations.in").unwrap();
-    f.write(d.translations()).unwrap();
+    f.write_all(d.translations()).unwrap();
 }

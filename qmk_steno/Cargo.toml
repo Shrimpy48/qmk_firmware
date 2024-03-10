@@ -12,6 +12,9 @@ crate-type = ["staticlib"]
 lto = true
 codegen-units = 1
 
+[profile.release.build-override]
+opt-level = 3
+
 [features]
 std = []
 default = []

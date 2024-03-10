@@ -15,9 +15,10 @@ extern crate core as std;
 
 mod interface;
 
-use crate::std::fmt::Write;
-
 pub use interface::*;
+
+#[cfg(all(not(feature = "std"), not(test)))]
+use std::fmt::Write;
 
 #[cfg(all(not(feature = "std"), not(test)))]
 #[panic_handler]
