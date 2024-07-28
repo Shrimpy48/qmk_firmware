@@ -20,7 +20,7 @@ std = []
 default = []
 
 [dependencies]
-steno_engine = { path = "/home/philip/rust/steno_engine", default_features = false }
+steno_engine = { path = "/home/philip/rust/steno_engine", default-features = false }
 
 [build-dependencies]
 cbindgen = "0.26.0"

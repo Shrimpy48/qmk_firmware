@@ -1,4 +1,4 @@
-use steno_engine::Stroke;
+use steno_engine::common::Stroke;
 
 use crate::handle_stroke;
 

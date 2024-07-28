@@ -3,7 +3,7 @@ use std::io::Write;
 
 extern crate cbindgen;
 
-use steno_engine::dictionary::generate;
+use steno_engine::dictionary::{packed, simple};
 
 fn main() {
     let crate_dir = env::var("CARGO_MANIFEST_DIR").unwrap();
@@ -40,11 +40,8 @@ fn main() {
     for path in json_paths {
         println!("cargo:rerun-if-changed={path}");
     }
-    let mut upd =
-        generate::UnpackedDictionary::from_json(json_paths).expect("Unable to create dictionary");
-    let d = upd.pack();
-    let mut f = std::fs::File::create("nodes.in").unwrap();
-    f.write_all(d.nodes()).unwrap();
-    let mut f = std::fs::File::create("translations.in").unwrap();
-    f.write_all(d.translations()).unwrap();
+    let upd = simple::Dictionary::from_json(json_paths).expect("Unable to create dictionary");
+    let d: packed::Dictionary<Vec<u8>> = upd.into();
+    let mut f = std::fs::File::create("dict.in").unwrap();
+    f.write_all(&d.to_bytes()).unwrap();
 }
