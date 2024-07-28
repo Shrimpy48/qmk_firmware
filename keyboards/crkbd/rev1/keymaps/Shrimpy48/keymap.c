@@ -3,6 +3,9 @@
 #include "sendstring_uk.h"
 #include "os_detection.h"
 #include "transactions.h"
+#ifdef CONSOLE_ENABLE
+#include "print.h"
+#endif // CONSOLE_ENABLE
 
 #ifdef RGB_MATRIX_CUSTOM_USER
 #include "snek.h"
@@ -300,50 +303,18 @@ static void oled_render_layer_state(void) {
 
 #ifdef STENO_TAPE
 #define STENO_TAPE_LEN 3
-// In reverse order because reasons
-static const char steno_chars[23] PROGMEM = {'Z', 'D', 'S', 'T', 'G', 'L', 'B', 'P', 'R', 'F', 'U', 'E', '*', 'O', 'A', 'R', 'H', 'W', 'P', 'K', 'T', 'S', '#'};
-
-uint32_t steno_tape[STENO_TAPE_LEN] = {0};
-
-uint32_t translate_chord(uint8_t chord[MAX_STROKE_SIZE]) {
-    uint32_t num = ((chord[0] & 0b00111111) > 0) || ((chord[5] & 0b01111110) > 0);
-    uint32_t s_l = (chord[1] & 0b01100000) > 0;
-    uint32_t tkpwh_l = chord[1] & 0b00011111;
-    uint32_t rao_l = (chord[2] & 0b01110000) >> 4;
-    uint32_t star = ((chord[2] & 0b00001100) > 0) || ((chord[3] & 0b00110000) > 0);
-    uint32_t eufr_r = chord[3] & 0b00001111;
-    uint32_t pblgtsd_r = chord[4] & 0b01111111;
-    uint32_t z_r = chord[5] & 0b00000001;
-    return z_r | (pblgtsd_r << 1) | (eufr_r << 8) | (star << 12) | (rao_l << 13) | (tkpwh_l << 16) | (s_l << 21) | (num << 22);
-}
-
+uint32_t steno_hist[STENO_TAPE_LEN] = {0};
 
 void clear_steno_tape(void) {
     for (uint8_t i = 0; i < STENO_TAPE_LEN; i++) {
-        steno_tape[i] = 0;
+        steno_hist[i] = 0;
     }
 }
 
 void oled_render_steno_tape(void) {
-    uint32_t one = 1;
     for (uint8_t row = 0; row < STENO_TAPE_LEN; row++) {
-        for (int32_t i = 22; i > 12; i--) {
-            if (steno_tape[row] & (one << i)) {
-                char steno_char = pgm_read_byte(&steno_chars[i]);
-                oled_write_char(steno_char, false);
-            }
-        }
-        if (steno_tape[row] & (one << 12)) {
-            char steno_char = pgm_read_byte(&steno_chars[12]);
-            oled_write_char(steno_char, false);
-        } else if (steno_tape[row]) {
-            oled_write_char('-', false);
-        }
-        for (int32_t i = 11; i >= 0; i--) {
-            if (steno_tape[row] & (one << i)) {
-                char steno_char = pgm_read_byte(&steno_chars[i]);
-                oled_write_char(steno_char, false);
-            }
+        if (steno_hist[row]) {
+            oled_write_stroke(steno_hist[row]);
         }
         oled_advance_page(true);
     }
@@ -497,6 +468,10 @@ void keyboard_post_init_user(void) {
 #ifdef OS_DETECTION_ENABLE
     transaction_register_rpc(USER_SYNC_OS, user_sync_os_slave_handler);
 #endif // OS_DETECTION_ENABLE
+#ifdef CONSOLE_ENABLE
+    debug_enable=true;
+    debug_keyboard=true;
+#endif
 }
 
 #ifdef OLED_ENABLE
@@ -587,14 +562,14 @@ bool post_process_steno_user(uint16_t keycode, keyrecord_t *record, steno_mode_t
         return true;
     }
 
-    steno_tape[STENO_TAPE_LEN-1] = translate_chord(chord);
+    steno_hist[STENO_TAPE_LEN-1] = translate_chord(chord);
 
     if (!record->event.pressed && n_pressed_keys < 1) {
         // Advance the tape
         for (uint8_t i = 0; i < STENO_TAPE_LEN-1; i++) {
-            steno_tape[i] = steno_tape[i+1];
+            steno_hist[i] = steno_hist[i+1];
         }
-        steno_tape[STENO_TAPE_LEN-1] = 0;
+        steno_hist[STENO_TAPE_LEN-1] = 0;
     }
 
     return true;
@@ -632,9 +607,16 @@ bool send_steno_chord_user(steno_mode_t mode, uint8_t chord[MAX_STROKE_SIZE]) {
     }
 
     if (steno_onboard) {
-        handle_chord(chord);
+        uint32_t stroke = translate_chord(chord);
+#ifdef CONSOLE_ENABLE
+        uprintf("handling %ld\n", stroke);
+#endif // CONSOLE_ENABLE
+        handle_stroke(stroke);
         return false;
     } else {
+#ifdef CONSOLE_ENABLE
+        uprint("passing stroke on to QMK\n");
+#endif // CONSOLE_ENABLE
         return true;
     }
 }
