@@ -33,6 +33,8 @@ extern "C" {
     fn tap_code(kc: u8);
 
     fn oled_write(data: *const std::ffi::c_char, invert: bool);
+
+    // fn printf(fmt: *const std::ffi::c_char, ...) -> std::ffi::c_int;
 }
 
 #[cfg(all(not(feature = "std"), not(test)))]
@@ -40,35 +42,78 @@ extern "C" {
 fn panic_handler(panic_info: &std::panic::PanicInfo) -> ! {
     unsafe {
         let msg = std::ffi::CStr::from_bytes_with_nul(b"panic\n\0").unwrap_unchecked();
+        // printf(msg.as_ptr());
         send_string(msg.as_ptr());
     }
-    let _ = write!(QmkOut::new(), "{panic_info}");
+    // let _ = writeln!(QmkConsole::new(), "{panic_info}");
+    let _ = writeln!(QmkOut::new(), "{panic_info}");
     loop {}
 }
 
+struct WrapDebug<W> {
+    inner: W,
+}
+
+impl<W> WrapDebug<W> {
+    fn new(writer: W) -> Self {
+        Self { inner: writer }
+    }
+}
+
+impl<W: Write> Write for WrapDebug<W> {
+    fn write_str(&mut self, s: &str) -> std::fmt::Result {
+        write!(self.inner, "{:?}", s)
+    }
+}
+
+impl<W: Write> fixed::Output for WrapDebug<W> {
+    fn delete_n_last(&mut self, n: usize) -> std::fmt::Result {
+        write!(self.inner, "del {n}")
+    }
+
+    fn emit_keys<I>(&mut self, it: I) -> std::fmt::Result
+    where
+        I: IntoIterator<Item = steno_engine::keycode::Event>,
+    {
+        for event in it {
+            write!(self.inner, "emit {event:?}")?;
+        }
+        Ok(())
+    }
+}
+
 struct QmkOut {
-    buf: [u8; 256],
+    buf: [u8; 16],
 }
 
 impl QmkOut {
     fn new() -> Self {
-        Self { buf: [0; 256] }
+        Self { buf: [0; 16] }
     }
 }
 
-impl std::fmt::Write for QmkOut {
-    fn write_str(&mut self, s: &str) -> std::fmt::Result {
-        if s.len() >= self.buf.len() {
-            return Err(std::fmt::Error);
-        }
-        let dest = &mut self.buf[..s.len()];
-        dest.copy_from_slice(s.as_bytes());
-        self.buf[s.len()] = 0;
-        let Ok(c_str) = std::ffi::CStr::from_bytes_with_nul(&self.buf[..=s.len()]) else {
-            return Err(std::fmt::Error);
-        };
-        unsafe {
-            send_string(c_str.as_ptr());
+impl Write for QmkOut {
+    fn write_str(&mut self, mut s: &str) -> std::fmt::Result {
+        while !s.is_empty() {
+            let chunk = if s.len() < self.buf.len() {
+                s
+            } else {
+                let prefix = &s.as_bytes()[..self.buf.len() - 1];
+                prefix.utf8_chunks().next().map(|c| c.valid()).unwrap_or("")
+            };
+            if chunk.is_empty() {
+                return Err(std::fmt::Error);
+            }
+            s = &s[chunk.len()..];
+            let dest = &mut self.buf[..chunk.len()];
+            dest.copy_from_slice(chunk.as_bytes());
+            self.buf[chunk.len()] = b'\0';
+            let Ok(c_str) = std::ffi::CStr::from_bytes_with_nul(&self.buf[..=chunk.len()]) else {
+                return Err(std::fmt::Error);
+            };
+            unsafe {
+                send_string(c_str.as_ptr());
+            }
         }
         Ok(())
     }
@@ -100,32 +145,69 @@ impl fixed::Output for QmkOut {
 }
 
 struct QmkOled {
-    buf: [u8; 32],
+    buf: [u8; 16],
 }
 
 impl QmkOled {
     fn new() -> Self {
-        Self { buf: [0; 32] }
+        Self { buf: [0; 16] }
     }
 }
 
-impl std::fmt::Write for QmkOled {
-    fn write_str(&mut self, s: &str) -> std::fmt::Result {
-        if s.len() >= self.buf.len() {
-            return Err(std::fmt::Error);
-        }
-        let dest = &mut self.buf[..s.len()];
-        dest.copy_from_slice(s.as_bytes());
-        self.buf[s.len()] = 0;
-        let Ok(c_str) = std::ffi::CStr::from_bytes_with_nul(&self.buf[..=s.len()]) else {
-            return Err(std::fmt::Error);
-        };
-        unsafe {
-            oled_write(c_str.as_ptr(), false);
+impl Write for QmkOled {
+    fn write_str(&mut self, mut s: &str) -> std::fmt::Result {
+        while !s.is_empty() {
+            let chunk = if s.len() < self.buf.len() {
+                s
+            } else {
+                let prefix = &s.as_bytes()[..self.buf.len() - 1];
+                prefix.utf8_chunks().next().map(|c| c.valid()).unwrap_or("")
+            };
+            if chunk.is_empty() {
+                return Err(std::fmt::Error);
+            }
+            s = &s[chunk.len()..];
+            let dest = &mut self.buf[..chunk.len()];
+            dest.copy_from_slice(chunk.as_bytes());
+            self.buf[chunk.len()] = b'\0';
+            let Ok(c_str) = std::ffi::CStr::from_bytes_with_nul(&self.buf[..=chunk.len()]) else {
+                return Err(std::fmt::Error);
+            };
+            unsafe {
+                oled_write(c_str.as_ptr(), false);
+            }
         }
         Ok(())
     }
 }
+
+// struct QmkConsole {
+//     buf: [u8; 64],
+// }
+
+// impl QmkConsole {
+//     fn new() -> Self {
+//         Self { buf: [0; 64] }
+//     }
+// }
+
+// impl Write for QmkConsole {
+//     fn write_str(&mut self, s: &str) -> std::fmt::Result {
+//         if s.len() >= self.buf.len() {
+//             return Err(std::fmt::Error);
+//         }
+//         let dest = &mut self.buf[..s.len()];
+//         dest.copy_from_slice(s.as_bytes());
+//         self.buf[s.len()] = 0;
+//         let Ok(c_str) = std::ffi::CStr::from_bytes_with_nul(&self.buf[..=s.len()]) else {
+//             return Err(std::fmt::Error);
+//         };
+//         unsafe {
+//             printf(c_str.as_ptr());
+//         }
+//         Ok(())
+//     }
+// }
 
 type Engine = fixed::Engine<
     (Dictionary<&'static [u8]>, numbers::Dictionary),
@@ -133,8 +215,8 @@ type Engine = fixed::Engine<
     [u8; OUT_BUF_LEN],
 >;
 
-const ACT_BUF_LEN: usize = 256;
-const OUT_BUF_LEN: usize = 128;
+const ACT_BUF_LEN: usize = 64;
+const OUT_BUF_LEN: usize = 64;
 static mut ENGINE: Option<Engine> = None;
 
 fn build() -> Engine {

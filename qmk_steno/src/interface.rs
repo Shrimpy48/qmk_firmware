@@ -11,7 +11,8 @@ pub unsafe extern "C" fn translate_chord(geminipr_packet: *const u8) -> u32 {
 
 #[no_mangle]
 pub extern "C" fn handle_stroke(stroke: u32) {
-    engine_handle_stroke(Stroke::try_from(stroke).unwrap())
+    let stroke = Stroke::try_from(stroke).unwrap();
+    engine_handle_stroke(stroke)
 }
 
 #[no_mangle]
