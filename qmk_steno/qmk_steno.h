@@ -11,4 +11,10 @@ extern void unregister_code(uint8_t kc);
 
 extern void tap_code(uint8_t kc);
 
-void handle_chord(const uint8_t *geminipr_packet);
+extern void oled_write(const char *data, bool invert);
+
+uint32_t translate_chord(const uint8_t *geminipr_packet);
+
+void handle_stroke(uint32_t stroke);
+
+void oled_write_stroke(uint32_t stroke);
