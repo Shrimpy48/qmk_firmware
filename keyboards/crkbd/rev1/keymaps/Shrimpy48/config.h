@@ -87,7 +87,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #    define ENABLE_RGB_MATRIX_SOLID_REACTIVE_MULTIWIDE
 #endif // RGB_MATRIX_ENABLE
 
-#define SPLIT_TRANSACTION_IDS_USER USER_SYNC_SNEK, USER_SYNC_OS
+#define SPLIT_TRANSACTION_IDS_USER USER_SYNC_SNEK, USER_SYNC_OS, USER_SYNC_TAPE
 
 // Sync the layer state between sides (for RGB layer indicators)
 #define SPLIT_LAYER_STATE_ENABLE

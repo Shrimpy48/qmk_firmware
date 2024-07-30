@@ -69,13 +69,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  //        MI_C   , MI_Cs  , MI_D   , MI_Ds  , MI_E   , MI_F   ,    MI_Fs  , MI_G   , MI_Gs  , MI_A   , MI_As  , MI_B   ,
  //        MI_C   , MI_Cs  , MI_D   , MI_Ds  , MI_E   , MI_F   ,    MI_Fs  , MI_G   , MI_Gs  , MI_A   , MI_As  , MI_B   ,
  //        MI_C   , MI_Cs  , MI_D   , MI_Ds  , MI_E   , MI_F   ,    MI_Fs  , MI_G   , MI_Gs  , MI_A   , MI_As  , MI_B   ,
- //                                   TO(STN), MI_OCTD, MI_SOFT,    MI_SUST, MI_OCTU, TO(STN) 
+ //                                   TO(STN), MI_OCTD, MI_SOFT,    MI_SUST, MI_OCTU, TO(STN)
  //        ),
 	// [SEQ] = LAYOUT_split_3x6_3(
  //        KC_NO  , KC_NO  , KC_NO  , KC_NO  , KC_NO  , KC_NO  ,    KC_NO  , KC_NO  , KC_NO  , KC_NO  , KC_NO  , KC_NO  ,
  //        KC_NO  , SQ_S(0), SQ_S(1), SQ_S(2), SQ_S(3), KC_NO  ,    SQ_RESU, SQ_S(8), SQ_S(9), SQ_S(10),SQ_S(11),KC_NO  ,
  //        KC_NO  , SQ_S(4), SQ_S(5), SQ_S(6), SQ_S(7), KC_NO  ,    SQ_RESD, SQ_S(12),SQ_S(13),SQ_S(14),SQ_S(15),KC_NO  ,
- //                                   TO(STN), SQ_TMPD, SQ_TOG ,    SQ_TOG , SQ_TMPU, TO(STN) 
+ //                                   TO(STN), SQ_TMPD, SQ_TOG ,    SQ_TOG , SQ_TMPU, TO(STN)
  //        ),
 	[FUN] = LAYOUT_split_3x6_3(
         KC_F1  , KC_F2  , KC_F3  , KC_F4  , KC_F5  , KC_F6  ,    KC_F7  , KC_F8  , KC_F9  , KC_F10 , KC_F11 , KC_F12 ,
@@ -304,11 +304,20 @@ static void oled_render_layer_state(void) {
 #ifdef STENO_TAPE
 #define STENO_TAPE_LEN 3
 uint32_t steno_hist[STENO_TAPE_LEN] = {0};
+bool tape_dirty = false;
+
+void user_sync_tape_slave_handler(uint8_t in_buflen, const void* in_data, uint8_t out_buflen, void* out_data) {
+    const uint32_t *m2s = (const uint32_t*)in_data;
+    for (uint8_t i = 0; i < STENO_TAPE_LEN; i++) {
+        steno_hist[i] = m2s[i];
+    }
+}
 
 void clear_steno_tape(void) {
     for (uint8_t i = 0; i < STENO_TAPE_LEN; i++) {
         steno_hist[i] = 0;
     }
+    tape_dirty = true;
 }
 
 void oled_render_steno_tape(void) {
@@ -468,6 +477,9 @@ void keyboard_post_init_user(void) {
 #ifdef OS_DETECTION_ENABLE
     transaction_register_rpc(USER_SYNC_OS, user_sync_os_slave_handler);
 #endif // OS_DETECTION_ENABLE
+#ifdef STENO_TAPE
+    transaction_register_rpc(USER_SYNC_TAPE, user_sync_tape_slave_handler);
+#endif // STENO_TAPE
 #ifdef CONSOLE_ENABLE
     debug_enable=true;
     debug_keyboard=true;
@@ -519,6 +531,14 @@ void housekeeping_task_user(void) {
         }
 #endif // OS_DETECTION_ENABLE
 
+#ifdef STENO_TAPE
+        if (tape_dirty) {
+            if (transaction_rpc_send(USER_SYNC_TAPE, sizeof(steno_hist), &steno_hist)) {
+                tape_dirty = false;
+            }
+        }
+#endif // STENO_TAPE
+
     }
 }
 
@@ -556,6 +576,117 @@ bool oled_task_user(void) {
 #endif // OLED_ENABLE
 
 #ifdef STENO_TAPE
+bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
+    if (get_highest_layer(layer_state|default_layer_state) != STN) {
+        return false;
+    }
+    uint32_t stroke = steno_hist[STENO_TAPE_LEN-1];
+    for (uint8_t row = 0; row < MATRIX_ROWS; ++row) {
+        for (uint8_t col = 0; col < MATRIX_COLS; ++col) {
+            uint8_t index = g_led_config.matrix_co[row][col];
+
+            if (index >= led_min && index < led_max && index != NO_LED) {
+                uint16_t kc = keymap_key_to_keycode(STN, (keypos_t){col,row});
+                HSV hsv = rgb_matrix_config.hsv;
+                if ((stroke & (1<<22)) && ((STN_N1 <= kc && kc <= STN_N6) || (STN_N7 <= kc && kc <= STN_NC))) {
+                    hsv.h = 11 * 0;
+                    RGB rgb = hsv_to_rgb(hsv);
+                    rgb_matrix_set_color(index, rgb.r, rgb.g, rgb.b);
+                } else if ((stroke & (1<<21)) && STN_S1 <= kc && kc <= STN_S2) {
+                    hsv.h = 11 * 1;
+                    RGB rgb = hsv_to_rgb(hsv);
+                    rgb_matrix_set_color(index, rgb.r, rgb.g, rgb.b);
+                } else if ((stroke & (1<<20)) && kc == STN_TL) {
+                    hsv.h = 11 * 2;
+                    RGB rgb = hsv_to_rgb(hsv);
+                    rgb_matrix_set_color(index, rgb.r, rgb.g, rgb.b);
+                } else if ((stroke & (1<<19)) && kc == STN_KL) {
+                    hsv.h = 11 * 3;
+                    RGB rgb = hsv_to_rgb(hsv);
+                    rgb_matrix_set_color(index, rgb.r, rgb.g, rgb.b);
+                } else if ((stroke & (1<<18)) && kc == STN_PL) {
+                    hsv.h = 11 * 4;
+                    RGB rgb = hsv_to_rgb(hsv);
+                    rgb_matrix_set_color(index, rgb.r, rgb.g, rgb.b);
+                } else if ((stroke & (1<<17)) && kc == STN_WL) {
+                    hsv.h = 11 * 5;
+                    RGB rgb = hsv_to_rgb(hsv);
+                    rgb_matrix_set_color(index, rgb.r, rgb.g, rgb.b);
+                } else if ((stroke & (1<<16)) && kc == STN_HL) {
+                    hsv.h = 11 * 6;
+                    RGB rgb = hsv_to_rgb(hsv);
+                    rgb_matrix_set_color(index, rgb.r, rgb.g, rgb.b);
+                } else if ((stroke & (1<<15)) && kc == STN_RL) {
+                    hsv.h = 11 * 7;
+                    RGB rgb = hsv_to_rgb(hsv);
+                    rgb_matrix_set_color(index, rgb.r, rgb.g, rgb.b);
+                } else if ((stroke & (1<<14)) && kc == STN_A) {
+                    hsv.h = 11 * 8;
+                    RGB rgb = hsv_to_rgb(hsv);
+                    rgb_matrix_set_color(index, rgb.r, rgb.g, rgb.b);
+                } else if ((stroke & (1<<13)) && kc == STN_O) {
+                    hsv.h = 11 * 9;
+                    RGB rgb = hsv_to_rgb(hsv);
+                    rgb_matrix_set_color(index, rgb.r, rgb.g, rgb.b);
+                } else if ((stroke & (1<<12)) && ((STN_ST1 <= kc && kc <= STN_ST2) || (STN_ST3 <= kc && kc <= STN_ST4))) {
+                    hsv.h = 11 * 10;
+                    RGB rgb = hsv_to_rgb(hsv);
+                    rgb_matrix_set_color(index, rgb.r, rgb.g, rgb.b);
+                } else if ((stroke & (1<<11)) && kc == STN_E) {
+                    hsv.h = 11 * 11;
+                    RGB rgb = hsv_to_rgb(hsv);
+                    rgb_matrix_set_color(index, rgb.r, rgb.g, rgb.b);
+                } else if ((stroke & (1<<10)) && kc == STN_U) {
+                    hsv.h = 11 * 12;
+                    RGB rgb = hsv_to_rgb(hsv);
+                    rgb_matrix_set_color(index, rgb.r, rgb.g, rgb.b);
+                } else if ((stroke & (1<<9)) && kc == STN_FR) {
+                    hsv.h = 11 * 13;
+                    RGB rgb = hsv_to_rgb(hsv);
+                    rgb_matrix_set_color(index, rgb.r, rgb.g, rgb.b);
+                } else if ((stroke & (1<<8)) && kc == STN_RR) {
+                    hsv.h = 11 * 14;
+                    RGB rgb = hsv_to_rgb(hsv);
+                    rgb_matrix_set_color(index, rgb.r, rgb.g, rgb.b);
+                } else if ((stroke & (1<<7)) && kc == STN_PR) {
+                    hsv.h = 11 * 15;
+                    RGB rgb = hsv_to_rgb(hsv);
+                    rgb_matrix_set_color(index, rgb.r, rgb.g, rgb.b);
+                } else if ((stroke & (1<<6)) && kc == STN_BR) {
+                    hsv.h = 11 * 16;
+                    RGB rgb = hsv_to_rgb(hsv);
+                    rgb_matrix_set_color(index, rgb.r, rgb.g, rgb.b);
+                } else if ((stroke & (1<<5)) && kc == STN_LR) {
+                    hsv.h = 11 * 17;
+                    RGB rgb = hsv_to_rgb(hsv);
+                    rgb_matrix_set_color(index, rgb.r, rgb.g, rgb.b);
+                } else if ((stroke & (1<<4)) && kc == STN_GR) {
+                    hsv.h = 11 * 18;
+                    RGB rgb = hsv_to_rgb(hsv);
+                    rgb_matrix_set_color(index, rgb.r, rgb.g, rgb.b);
+                } else if ((stroke & (1<<3)) && kc == STN_TR) {
+                    hsv.h = 11 * 19;
+                    RGB rgb = hsv_to_rgb(hsv);
+                    rgb_matrix_set_color(index, rgb.r, rgb.g, rgb.b);
+                } else if ((stroke & (1<<2)) && kc == STN_SR) {
+                    hsv.h = 11 * 20;
+                    RGB rgb = hsv_to_rgb(hsv);
+                    rgb_matrix_set_color(index, rgb.r, rgb.g, rgb.b);
+                } else if ((stroke & (1<<1)) && kc == STN_DR) {
+                    hsv.h = 11 * 21;
+                    RGB rgb = hsv_to_rgb(hsv);
+                    rgb_matrix_set_color(index, rgb.r, rgb.g, rgb.b);
+                } else if ((stroke & (1<<0)) && kc == STN_ZR) {
+                    hsv.h = 11 * 22;
+                    RGB rgb = hsv_to_rgb(hsv);
+                    rgb_matrix_set_color(index, rgb.r, rgb.g, rgb.b);
+                }
+            }
+        }
+    }
+    return false;
+}
+
 bool post_process_steno_user(uint16_t keycode, keyrecord_t *record, steno_mode_t mode, uint8_t chord[MAX_STROKE_SIZE], int8_t n_pressed_keys) {
     // Only GeminiPR is supported because I'm lazy
     if (mode != STENO_MODE_GEMINI) {
@@ -571,6 +702,8 @@ bool post_process_steno_user(uint16_t keycode, keyrecord_t *record, steno_mode_t
         }
         steno_hist[STENO_TAPE_LEN-1] = 0;
     }
+
+    tape_dirty = true;
 
     return true;
 }
