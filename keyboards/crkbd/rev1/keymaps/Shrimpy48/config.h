@@ -36,6 +36,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // Layer-independent combos
 #define COMBO_ONLY_FROM_LAYER 5
 
+#define DEBOUNCE 10
+
 #define FORCE_NKRO
 
 #define MIDI_ADVANCED
