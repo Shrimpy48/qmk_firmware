@@ -588,6 +588,8 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
             if (index >= led_min && index < led_max && index != NO_LED) {
                 uint16_t kc = keymap_key_to_keycode(STN, (keypos_t){col,row});
                 HSV hsv = rgb_matrix_config.hsv;
+                hsv.v = RGB_MATRIX_MAXIMUM_BRIGHTNESS;
+                hsv.s = 255;
                 if ((stroke & (1<<22)) && ((STN_N1 <= kc && kc <= STN_N6) || (STN_N7 <= kc && kc <= STN_NC))) {
                     hsv.h = 11 * 0;
                     RGB rgb = hsv_to_rgb(hsv);
