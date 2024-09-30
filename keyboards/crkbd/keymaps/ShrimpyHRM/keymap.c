@@ -75,9 +75,38 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       RGB_TOG, RGB_HUI, RGB_SAI, RGB_VAI, RGB_SPI, XXXXXXX,                      KC_MNXT, KC_MPLY, KC_VOLU, XXXXXXX, KC_PSCR,   DT_UP,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      RGB_MOD, RGB_HUD, RGB_SAD, RGB_VAD, RGB_SPD, XXXXXXX,                      KC_MPRV, KC_MUTE, KC_VOLD, XXXXXXX, DT_PRNT, DT_DOWN,
+      RGB_MOD, RGB_HUD, RGB_SAD, RGB_VAD, RGB_SPD,   TO(4),                      KC_MPRV, KC_MUTE, KC_VOLD, XXXXXXX, DT_PRNT, DT_DOWN,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                           XXXXXXX, _______,  KC_SPC,     KC_ENT, _______, XXXXXXX
                                       //`--------------------------'  `--------------------------'
+  ),
+
+    [4] = LAYOUT_split_3x6_3(
+  //,-----------------------------------------------------.                    ,-----------------------------------------------------.
+       STN_N1,  STN_N2,  STN_N3,  STN_N4,  STN_N5,  STN_N6,                       STN_N7,  STN_N8,  STN_N9,  STN_NA,  STN_NB,  STN_NC,
+  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
+       STN_FN,  STN_S1,  STN_TL,  STN_PL,  STN_HL, STN_ST1,                      STN_ST3,  STN_FR,  STN_PR,  STN_LR,  STN_TR,  STN_DR,
+  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
+      STN_PWR,  STN_S2,  STN_KL,  STN_WL,  STN_RL, STN_ST2,                      STN_ST4,  STN_RR,  STN_BR,  STN_GR,  STN_SR,  STN_ZR,
+  //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
+                                            STN_A,   STN_O,STN_RES1,   STN_RES2,   STN_E,   STN_U
+                                      //`--------------------------'  `--------------------------'
   )
 };
+
+bool send_steno_chord_user(steno_mode_t mode, uint8_t chord[MAX_STROKE_SIZE]) {
+    // Only pwr
+    const uint8_t EXIT_CHORD[MAX_STROKE_SIZE] = {
+        0b10000000,
+        0b00000000,
+        0b00000000,
+        0b01000000,
+        0b00000000,
+        0b00000000
+    };
+    if (chord == EXIT_CHORD) {
+        layer_move(0);
+        return false;
+    }
+    return true;
+}
