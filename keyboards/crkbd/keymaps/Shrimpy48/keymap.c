@@ -16,6 +16,10 @@
 // --- Keymap ---
 
 enum layers {
+    ALF,
+    SYM,
+    NUM,
+    EDT,
     STN,
     GMR,
     // MID,
@@ -23,10 +27,6 @@ enum layers {
     FUN,
     MOU,
     AUX,
-    ALF,
-    SYM,
-    NUM,
-    EDT,
 };
 
 enum keycodes {
@@ -53,6 +53,30 @@ enum keycodes {
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
+	[ALF] = LAYOUT_split_3x6_3(
+        KC_BSPC, UK_Q   , UK_W   , UK_F   , UK_P   , UK_B   ,    UK_J   , UK_L   , UK_U   , UK_Y   , UK_Z   , KC_DEL ,
+        KC_BSPC, UK_A   , UK_R   , UK_S   , UK_T   , UK_G   ,    UK_M   , UK_N   , UK_E   , UK_I   , UK_O   , KC_DEL ,
+        KC_BSPC, UK_QUOT, UK_X   , UK_C   , UK_D   , UK_V   ,    UK_K   , UK_H   , UK_COMM, UK_DOT , UK_COLN, KC_DEL ,
+                            TO(STN), LT(SYM,KC_TAB), KC_SPC ,    MT(MOD_RSFT,KC_ENT), LT(NUM,KC_ESC), TO(STN)
+        ),
+	[SYM] = LAYOUT_split_3x6_3(
+        _______, UK_LABK, UK_LBRC, UK_LCBR, UK_LPRN, UK_CIRC,    UK_DLR , UK_RPRN, UK_RCBR, UK_RBRC, UK_RABK, _______,
+        _______, UK_PLUS, UK_AMPR, UK_QUES, UK_EXLM, UK_TILD,    UK_HASH, UK_UNDS, UK_EQL , UK_ASTR, UK_MINS, _______,
+        _______, UK_NOT , UK_PIPE, UK_AT  , UK_SLSH, UK_PERC,    UK_GRV , UK_BSLS, UK_LABK, UK_RABK, UK_PND , _______,
+                                   _______, XXXXXXX, _______,    _______, _______, _______
+        ),
+	[NUM] = LAYOUT_split_3x6_3(
+        _______, UK_COMM, UK_7   , UK_8   , UK_9   , UK_DLR ,    UK_HASH, UK_MINS, UK_PLUS, UK_ASTR, UK_SLSH, _______,
+        _______, KC_DOT , KC_4   , KC_5   , KC_6   , UK_PND ,    KC_UNDS, KC_LEFT, KC_DOWN, KC_UP  , KC_RGHT, _______,
+        _______, KC_0   , UK_1   , UK_2   , UK_3   , KC_PERC,    UK_QUOT, KC_HOME, KC_PGDN, KC_PGUP, KC_END , _______,
+                                   _______, _______, _______,    _______, XXXXXXX, _______
+        ),
+	[EDT] = LAYOUT_split_3x6_3(
+        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, A(KC_HOME),A(KC_LEFT),S(C(KC_TAB)),C(KC_TAB),A(KC_RIGHT),XXXXXXX,
+        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, TO(STN),    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+                                   _______, XXXXXXX, _______,    _______, XXXXXXX, _______
+        ),
 	[STN] = LAYOUT_split_3x6_3(
         STN_N1 , STN_N2 , STN_N3 , STN_N4 , STN_N5 , STN_N6 ,    STN_N7 , STN_N8 , STN_N9 , STN_NA , STN_NB , STN_NC ,
         STN_FN , STN_S1 , STN_TL , STN_PL , STN_HL , STN_ST1,    STN_ST3, STN_FR , STN_PR , STN_LR , STN_TR , STN_DR ,
@@ -94,30 +118,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
         XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
                                    TO(STN), XXXXXXX, XXXXXXX,    XXXXXXX, XXXXXXX, TO(STN)
-        ),
-	[ALF] = LAYOUT_split_3x6_3(
-        KC_BSPC, UK_Q   , UK_W   , UK_F   , UK_P   , UK_B   ,    UK_J   , UK_L   , UK_U   , UK_Y   , UK_Z   , KC_DEL ,
-        KC_BSPC, UK_A   , UK_R   , UK_S   , UK_T   , UK_G   ,    UK_M   , UK_N   , UK_E   , UK_I   , UK_O   , KC_DEL ,
-        KC_BSPC, UK_QUOT, UK_X   , UK_C   , UK_D   , UK_V   ,    UK_K   , UK_H   , UK_COMM, UK_DOT , UK_COLN, KC_DEL ,
-                            TO(STN), LT(SYM,KC_TAB), KC_SPC ,    MT(MOD_RSFT,KC_ENT), LT(NUM,KC_ESC), TO(STN)
-        ),
-	[SYM] = LAYOUT_split_3x6_3(
-        _______, UK_LABK, UK_LBRC, UK_LCBR, UK_LPRN, UK_CIRC,    UK_DLR , UK_RPRN, UK_RCBR, UK_RBRC, UK_RABK, _______,
-        _______, UK_PLUS, UK_AMPR, UK_QUES, UK_EXLM, UK_TILD,    UK_HASH, UK_UNDS, UK_EQL , UK_ASTR, UK_MINS, _______,
-        _______, UK_NOT , UK_PIPE, UK_AT  , UK_SLSH, UK_PERC,    UK_GRV , UK_BSLS, UK_LABK, UK_RABK, UK_PND , _______,
-                                   _______, XXXXXXX, _______,    _______, _______, _______
-        ),
-	[NUM] = LAYOUT_split_3x6_3(
-        _______, UK_COMM, UK_7   , UK_8   , UK_9   , UK_DLR ,    UK_HASH, UK_MINS, UK_PLUS, UK_ASTR, UK_SLSH, _______,
-        _______, KC_DOT , KC_4   , KC_5   , KC_6   , UK_PND ,    KC_UNDS, KC_LEFT, KC_DOWN, KC_UP  , KC_RGHT, _______,
-        _______, KC_0   , UK_1   , UK_2   , UK_3   , KC_PERC,    UK_QUOT, KC_HOME, KC_PGDN, KC_PGUP, KC_END , _______,
-                                   _______, _______, _______,    _______, XXXXXXX, _______
-        ),
-	[EDT] = LAYOUT_split_3x6_3(
-        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, A(KC_HOME),A(KC_LEFT),S(C(KC_TAB)),C(KC_TAB),A(KC_RIGHT),XXXXXXX,
-        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-                                   _______, XXXXXXX, _______,    _______, XXXXXXX, _______
         ),
 };
 
