@@ -143,39 +143,23 @@ const key_override_t **key_overrides = (const key_override_t *[]){
 // --- Combos ---
 #ifdef COMBO_ENABLE
 // Combo 2nd and 3rd row for left mods, 1st and 2nd for right mods
-const uint16_t PROGMEM lls_combo[] = {UK_A, UK_QUOT, COMBO_END};
-const uint16_t PROGMEM llc_combo[] = {UK_R, UK_X, COMBO_END};
-const uint16_t PROGMEM lla_combo[] = {UK_S, UK_C, COMBO_END};
-const uint16_t PROGMEM llg_combo[] = {UK_T, UK_D, COMBO_END};
-const uint16_t PROGMEM rlg_combo[] = {UK_N, UK_H, COMBO_END};
-const uint16_t PROGMEM rla_combo[] = {UK_E, UK_COMM, COMBO_END};
-const uint16_t PROGMEM rlc_combo[] = {UK_I, UK_DOT, COMBO_END};
-const uint16_t PROGMEM rls_combo[] = {UK_O, UK_COLN, COMBO_END};
-const uint16_t PROGMEM lrs_combo[] = {UK_Q, UK_A, COMBO_END};
-const uint16_t PROGMEM lrc_combo[] = {UK_W, UK_R, COMBO_END};
-const uint16_t PROGMEM lra_combo[] = {UK_F, UK_S, COMBO_END};
-const uint16_t PROGMEM lrg_combo[] = {UK_P, UK_T, COMBO_END};
-const uint16_t PROGMEM rrg_combo[] = {UK_L, UK_N, COMBO_END};
-const uint16_t PROGMEM rra_combo[] = {UK_U, UK_E, COMBO_END};
-const uint16_t PROGMEM rrc_combo[] = {UK_Y, UK_I, COMBO_END};
-const uint16_t PROGMEM rrs_combo[] = {UK_Z, UK_O, COMBO_END};
+const uint16_t PROGMEM ls_combo[] = {UK_A, UK_QUOT, COMBO_END};
+const uint16_t PROGMEM la_combo[] = {UK_R, UK_X, COMBO_END};
+const uint16_t PROGMEM lc_combo[] = {UK_S, UK_C, COMBO_END};
+const uint16_t PROGMEM lg_combo[] = {UK_T, UK_D, COMBO_END};
+const uint16_t PROGMEM rg_combo[] = {UK_N, UK_H, COMBO_END};
+const uint16_t PROGMEM rc_combo[] = {UK_E, UK_COMM, COMBO_END};
+const uint16_t PROGMEM ra_combo[] = {UK_I, UK_DOT, COMBO_END};
+const uint16_t PROGMEM rs_combo[] = {UK_O, UK_COLN, COMBO_END};
 combo_t key_combos[] = {
-    COMBO(lls_combo, KC_LSFT),
-    COMBO(llc_combo, KC_LCTL),
-    COMBO(lla_combo, KC_LALT),
-    COMBO(llg_combo, KC_LGUI),
-    COMBO(rls_combo, KC_LSFT),
-    COMBO(rlc_combo, KC_LCTL),
-    COMBO(rla_combo, KC_LALT),
-    COMBO(rlg_combo, KC_LGUI),
-    COMBO(lrs_combo, KC_RSFT),
-    COMBO(lrc_combo, KC_RCTL),
-    COMBO(lra_combo, KC_RALT),
-    COMBO(lrg_combo, KC_RGUI),
-    COMBO(rrs_combo, KC_RSFT),
-    COMBO(rrc_combo, KC_RCTL),
-    COMBO(rra_combo, KC_RALT),
-    COMBO(rrg_combo, KC_RGUI),
+    COMBO(ls_combo, KC_LSFT),
+    COMBO(la_combo, KC_LALT),
+    COMBO(lc_combo, KC_LCTL),
+    COMBO(lg_combo, KC_LGUI),
+    COMBO(rs_combo, KC_RSFT),
+    COMBO(ra_combo, KC_LALT),
+    COMBO(rc_combo, KC_RCTL),
+    COMBO(rg_combo, KC_LGUI),
 };
 #endif // COMBO_ENABLE
 
