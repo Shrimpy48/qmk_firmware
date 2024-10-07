@@ -34,7 +34,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define HOLD_ON_OTHER_KEY_PRESS
 
 // Layer-independent combos
-#define COMBO_ONLY_FROM_LAYER 5
+#define COMBO_ONLY_FROM_LAYER 0
 
 #define DEBOUNCE 10
 
