@@ -85,6 +85,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // #    define ENABLE_RGB_MATRIX_PIXEL_RAIN
 // #    define ENABLE_RGB_MATRIX_TYPING_HEATMAP
 #    define ENABLE_RGB_MATRIX_SOLID_REACTIVE_MULTIWIDE
+#    define ENABLE_RGB_MATRIX_STARLIGHT_DUAL_HUE
 #endif // RGB_MATRIX_ENABLE
 
 #define SPLIT_TRANSACTION_IDS_USER USER_SYNC_SNEK, USER_SYNC_OS, USER_SYNC_TAPE
