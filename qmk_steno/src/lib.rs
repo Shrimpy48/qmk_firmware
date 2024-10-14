@@ -16,18 +16,17 @@ extern crate core as std;
 use std::fmt::Write;
 
 use steno_engine::common::Stroke;
-use steno_engine::dictionary::numbers;
-use steno_engine::dictionary::packed::Dictionary;
+use steno_engine::dictionary::packed::{Dictionary, StaticDictionary};
+use steno_engine::dictionary::{modifiers, numbers, symbols};
 use steno_engine::engine::fixed;
-use steno_engine::keycode::{Event, Keycode};
+use steno_engine::engine::fixed::Output;
+use steno_engine::keycode::{keystrokes_to_type, Event, Keycode};
 
 mod interface;
 
 pub use interface::*;
 
 extern "C" {
-    fn send_string(string: *const std::ffi::c_char);
-
     fn register_code(kc: u8);
     fn unregister_code(kc: u8);
     fn tap_code(kc: u8);
@@ -40,13 +39,7 @@ extern "C" {
 #[cfg(all(not(feature = "std"), not(test)))]
 #[panic_handler]
 fn panic_handler(panic_info: &std::panic::PanicInfo) -> ! {
-    unsafe {
-        let msg = std::ffi::CStr::from_bytes_with_nul(b"panic\n\0").unwrap_unchecked();
-        // printf(msg.as_ptr());
-        send_string(msg.as_ptr());
-    }
-    // let _ = writeln!(QmkConsole::new(), "{panic_info}");
-    let _ = writeln!(QmkOut::new(), "{panic_info}");
+    let _ = writeln!(QmkOut::new(), "panic:\n{panic_info}");
     loop {}
 }
 
@@ -66,7 +59,7 @@ impl<W: Write> Write for WrapDebug<W> {
     }
 }
 
-impl<W: Write> fixed::Output for WrapDebug<W> {
+impl<W: Write> Output for WrapDebug<W> {
     fn delete_n_last(&mut self, n: usize) -> std::fmt::Result {
         write!(self.inner, "del {n}")
     }
@@ -93,33 +86,12 @@ impl QmkOut {
 }
 
 impl Write for QmkOut {
-    fn write_str(&mut self, mut s: &str) -> std::fmt::Result {
-        while !s.is_empty() {
-            let chunk = if s.len() < self.buf.len() {
-                s
-            } else {
-                let prefix = &s.as_bytes()[..self.buf.len() - 1];
-                prefix.utf8_chunks().next().map(|c| c.valid()).unwrap_or("")
-            };
-            if chunk.is_empty() {
-                return Err(std::fmt::Error);
-            }
-            s = &s[chunk.len()..];
-            let dest = &mut self.buf[..chunk.len()];
-            dest.copy_from_slice(chunk.as_bytes());
-            self.buf[chunk.len()] = b'\0';
-            let Ok(c_str) = std::ffi::CStr::from_bytes_with_nul(&self.buf[..=chunk.len()]) else {
-                return Err(std::fmt::Error);
-            };
-            unsafe {
-                send_string(c_str.as_ptr());
-            }
-        }
-        Ok(())
+    fn write_str(&mut self, s: &str) -> std::fmt::Result {
+        self.emit_keys(keystrokes_to_type(s))
     }
 }
 
-impl fixed::Output for QmkOut {
+impl Output for QmkOut {
     fn delete_n_last(&mut self, n: usize) -> std::fmt::Result {
         for _ in 0..n {
             unsafe { tap_code(Keycode::Backspace.into()) }
@@ -210,7 +182,14 @@ impl Write for QmkOled {
 // }
 
 type Engine = fixed::Engine<
-    (Dictionary<&'static [u8]>, numbers::Dictionary),
+    (
+        StaticDictionary,
+        (
+            numbers::Dictionary,
+            symbols::DefDictionary,
+            modifiers::DefDictionary,
+        ),
+    ),
     [u8; ACT_BUF_LEN],
     [u8; OUT_BUF_LEN],
 >;
@@ -221,8 +200,10 @@ static mut ENGINE: Option<Engine> = None;
 
 fn build() -> Engine {
     let d = Dictionary::from_bytes(include_bytes!("../dict.in")).unwrap();
-    let num = numbers::Dictionary::new();
-    Engine::new((d, num), [0; ACT_BUF_LEN], [0; OUT_BUF_LEN])
+    let num = numbers::Dictionary::default();
+    let sym = symbols::Dictionary::default();
+    let mods = modifiers::Dictionary::default();
+    Engine::new((d, (num, sym, mods)), [0; ACT_BUF_LEN], [0; OUT_BUF_LEN])
 }
 
 pub(crate) fn take() -> Engine {
@@ -237,4 +218,14 @@ pub(crate) fn engine_handle_stroke(stroke: Stroke) {
     let mut e = take();
     e.handle_stroke(stroke, QmkOut::new()).unwrap();
     replace(e);
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn asdf() {
+        engine_handle_stroke(Stroke::H | Stroke::RL);
+    }
 }
