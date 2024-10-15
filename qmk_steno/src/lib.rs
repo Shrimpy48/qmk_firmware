@@ -15,6 +15,7 @@ extern crate core as std;
 
 use std::fmt::Write;
 
+use queue::Queue;
 use steno_engine::common::Stroke;
 use steno_engine::dictionary::packed::{Dictionary, StaticDictionary};
 use steno_engine::dictionary::{modifiers, numbers, symbols};
@@ -23,13 +24,15 @@ use steno_engine::engine::fixed::Output;
 use steno_engine::keycode::{keystrokes_to_type, Event, Keycode};
 
 mod interface;
+mod queue;
 
 pub use interface::*;
 
 extern "C" {
-    fn register_code(kc: u8);
-    fn unregister_code(kc: u8);
-    fn tap_code(kc: u8);
+    // Not using because of crashing issues
+    // fn register_code(kc: u8);
+    // fn unregister_code(kc: u8);
+    // fn tap_code(kc: u8);
 
     fn oled_write(data: *const std::ffi::c_char, invert: bool);
 
@@ -42,6 +45,8 @@ fn panic_handler(panic_info: &std::panic::PanicInfo) -> ! {
     let _ = writeln!(QmkOut::new(), "panic:\n{panic_info}");
     loop {}
 }
+
+const EVENT_DELAY_MS: u64 = 10;
 
 struct WrapDebug<W> {
     inner: W,
@@ -75,13 +80,11 @@ impl<W: Write> Output for WrapDebug<W> {
     }
 }
 
-struct QmkOut {
-    buf: [u8; 16],
-}
+struct QmkOut;
 
 impl QmkOut {
     fn new() -> Self {
-        Self { buf: [0; 16] }
+        Self
     }
 }
 
@@ -94,7 +97,11 @@ impl Write for QmkOut {
 impl Output for QmkOut {
     fn delete_n_last(&mut self, n: usize) -> std::fmt::Result {
         for _ in 0..n {
-            unsafe { tap_code(Keycode::Backspace.into()) }
+            // unsafe {
+            //     tap_code(Keycode::Backspace.into());
+            //     // wait_ms(EVENT_DELAY_MS);
+            // }
+            queue_push(Event::Tap(Keycode::Backspace));
         }
         Ok(())
     }
@@ -104,13 +111,15 @@ impl Output for QmkOut {
         I: IntoIterator<Item = steno_engine::keycode::Event>,
     {
         for event in it {
-            unsafe {
-                match event {
-                    Event::Tap(key) => tap_code(key.into()),
-                    Event::Press(key) => register_code(key.into()),
-                    Event::Release(key) => unregister_code(key.into()),
-                }
-            }
+            // unsafe {
+            //     match event {
+            //         Event::Tap(key) => tap_code(key.into()),
+            //         Event::Press(key) => register_code(key.into()),
+            //         Event::Release(key) => unregister_code(key.into()),
+            //     }
+            //     // wait_ms(EVENT_DELAY_MS);
+            // }
+            queue_push(event);
         }
         Ok(())
     }
@@ -218,6 +227,29 @@ pub(crate) fn engine_handle_stroke(stroke: Stroke) {
     let mut e = take();
     e.handle_stroke(stroke, QmkOut::new()).unwrap();
     replace(e);
+}
+
+static mut QUEUE: Option<Queue> = None;
+
+pub(crate) fn take_queue() -> Queue {
+    unsafe { QUEUE.take() }.unwrap_or_else(Queue::new)
+}
+
+pub(crate) fn replace_queue(q: Queue) {
+    assert!(unsafe { QUEUE.replace(q) }.is_none())
+}
+
+pub(crate) fn queue_push(e: Event) {
+    let mut q = take_queue();
+    q.push(e);
+    replace_queue(q);
+}
+
+pub(crate) fn queue_pop() -> Option<Event> {
+    let mut q = take_queue();
+    let out = q.pop();
+    replace_queue(q);
+    out
 }
 
 #[cfg(test)]
