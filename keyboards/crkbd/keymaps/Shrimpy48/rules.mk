@@ -1,5 +1,6 @@
 CONSOLE_ENABLE = no
 
+DEBOUNCE_TYPE = asym_eager_defer_pk
 
 RGBLIGHT_ENABLE = no
 RGB_MATRIX_ENABLE = yes
