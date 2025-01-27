@@ -33,10 +33,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define TAPPING_TERM 300
 #define HOLD_ON_OTHER_KEY_PRESS
 
+// Keep oneshot keys held for 1s
+#define ONESHOT_TIMEOUT 1000
+
 // Layer-independent combos
 #define COMBO_ONLY_FROM_LAYER 0
+#define COMBO_TERM 100
 
-#define DEBOUNCE 7
+// Once a key is pressed, it will remain pressed
+// until released for 10ms
+#define DEBOUNCE 10
 
 #define FORCE_NKRO
 

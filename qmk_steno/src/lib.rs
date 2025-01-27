@@ -28,6 +28,7 @@ mod queue;
 
 pub use interface::*;
 
+#[cfg(feature = "qmk")]
 extern "C" {
     // Not using because of crashing issues
     // fn register_code(kc: u8);
@@ -42,6 +43,7 @@ extern "C" {
 #[cfg(all(not(feature = "std"), not(test)))]
 #[panic_handler]
 fn panic_handler(panic_info: &std::panic::PanicInfo) -> ! {
+    #[cfg(feature = "qmk")]
     let _ = writeln!(QmkOut::new(), "panic:\n{panic_info}");
     loop {}
 }
@@ -80,20 +82,24 @@ impl<W: Write> Output for WrapDebug<W> {
     }
 }
 
+#[cfg(feature = "qmk")]
 struct QmkOut;
 
+#[cfg(feature = "qmk")]
 impl QmkOut {
     fn new() -> Self {
         Self
     }
 }
 
+#[cfg(feature = "qmk")]
 impl Write for QmkOut {
     fn write_str(&mut self, s: &str) -> std::fmt::Result {
         self.emit_keys(keystrokes_to_type(s))
     }
 }
 
+#[cfg(feature = "qmk")]
 impl Output for QmkOut {
     fn delete_n_last(&mut self, n: usize) -> std::fmt::Result {
         for _ in 0..n {
@@ -125,16 +131,19 @@ impl Output for QmkOut {
     }
 }
 
+#[cfg(feature = "qmk")]
 struct QmkOled {
     buf: [u8; 16],
 }
 
+#[cfg(feature = "qmk")]
 impl QmkOled {
     fn new() -> Self {
         Self { buf: [0; 16] }
     }
 }
 
+#[cfg(feature = "qmk")]
 impl Write for QmkOled {
     fn write_str(&mut self, mut s: &str) -> std::fmt::Result {
         while !s.is_empty() {
@@ -190,7 +199,7 @@ impl Write for QmkOled {
 //     }
 // }
 
-type Engine = fixed::Engine<
+pub type Engine = fixed::Engine<
     (
         StaticDictionary,
         (
@@ -207,7 +216,7 @@ const ACT_BUF_LEN: usize = 64;
 const OUT_BUF_LEN: usize = 64;
 static mut ENGINE: Option<Engine> = None;
 
-fn build() -> Engine {
+pub fn build() -> Engine {
     let d = Dictionary::from_bytes(include_bytes!("../dict.in")).unwrap();
     let num = numbers::Dictionary::default();
     let sym = symbols::Dictionary::default();
@@ -223,6 +232,7 @@ pub(crate) fn replace(e: Engine) {
     assert!(unsafe { ENGINE.replace(e) }.is_none())
 }
 
+#[cfg(feature = "qmk")]
 pub(crate) fn engine_handle_stroke(stroke: Stroke) {
     let mut e = take();
     e.handle_stroke(stroke, QmkOut::new()).unwrap();
@@ -256,6 +266,7 @@ pub(crate) fn queue_pop() -> Option<Event> {
 mod tests {
     use super::*;
 
+#[cfg(feature = "qmk")]
     #[test]
     fn asdf() {
         engine_handle_stroke(Stroke::H | Stroke::RL);
