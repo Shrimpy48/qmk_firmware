@@ -24,8 +24,8 @@ qmk = []
 default = ["qmk"]
 
 [dependencies]
-steno_engine = { path = "/home/philip/rust/steno_engine", default-features = false }
+steno_engine = { path = "/home/philip/src/steno_engine", default-features = false }
 
 [build-dependencies]
 cbindgen = "0.26.0"
-steno_engine = { path = "/home/philip/rust/steno_engine", features = ["std"] }
+steno_engine = { path = "/home/philip/src/steno_engine", features = ["std"] }
