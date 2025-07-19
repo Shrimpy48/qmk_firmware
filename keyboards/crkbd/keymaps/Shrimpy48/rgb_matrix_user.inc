@@ -75,8 +75,8 @@ static bool musical(effect_params_t* params) {
 
 // e.g: A more complex effect, relying on external methods and state, with
 // dedicated init and run methods
-uint16_t last_tick_time;
-uint16_t last_sync_time;
+uint32_t last_tick_time;
+uint32_t last_sync_time;
 static keypos_t snake_to_matrix(coord_t snake_pos) {
     keypos_t out;
     if (snake_pos.col < 6) {
@@ -97,8 +97,7 @@ static void snek_complex_init(effect_params_t* params) {
 }
 static bool snek_complex_run(effect_params_t* params) {
   RGB_MATRIX_USE_LIMITS(led_min, led_max);
-  // TODO: move tick to a housekeeping thing
-  uint16_t time = g_rgb_timer;
+  uint32_t time = g_rgb_timer;
   if (is_keyboard_master()) {
       if ((time - last_tick_time) > 65535 / qadd8(rgb_matrix_config.speed, 64)) {
           tick();
