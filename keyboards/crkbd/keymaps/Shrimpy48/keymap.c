@@ -22,7 +22,7 @@ enum layers {
     FUN,
     STN,
     GMR,
-    // MID,
+    MID,
     // SEQ,
     // MOU,
 };
@@ -71,7 +71,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         ),
 	[FUN] = LAYOUT_split_3x6_3(
         KC_F1  , KC_F2  , KC_F3  , KC_F4  , KC_F5  , KC_F6  ,    KC_F7  , KC_F8  , KC_F9  , KC_F10 , KC_F11 , KC_F12 ,
-        RGB_HUI, RGB_SAI, RGB_VAI, RGB_SPI, RGB_TOG, RGB_MOD,    KC_MNXT, KC_MPLY, KC_VOLU, KC_BRIU, KC_PSCR, KC_PAUS,
+        RGB_HUI, RGB_SAI, RGB_VAI, RGB_SPI, RGB_TOG, RGB_MOD,    KC_MNXT, KC_MPLY, KC_VOLU, KC_BRIU, KC_PSCR, TO(MID),
         RGB_HUD, RGB_SAD, RGB_VAD, RGB_SPD, RGB_M_R, RGB_RMOD,   KC_MPRV, KC_MUTE, KC_VOLD, KC_BRID, KC_INS , TO(GMR),
                                    XXXXXXX, XXXXXXX, _______,    _______, XXXXXXX, XXXXXXX
         ),
@@ -87,12 +87,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_LCTL, KC_Z   , KC_X   , KC_C   , KC_V   , KC_B   ,    KC_N   , KC_M   , KC_COMM, KC_DOT , KC_SLSH, KC_BSPC,
                                    KC_LALT, KC_SPC , KC_LBRC,    KC_ENT , KC_RBRC, TO(ALF)
         ),
-	// [MID] = LAYOUT_split_3x6_3(
- //        MI_C   , MI_Cs  , MI_D   , MI_Ds  , MI_E   , MI_F   ,    MI_Fs  , MI_G   , MI_Gs  , MI_A   , MI_As  , MI_B   ,
- //        MI_C   , MI_Cs  , MI_D   , MI_Ds  , MI_E   , MI_F   ,    MI_Fs  , MI_G   , MI_Gs  , MI_A   , MI_As  , MI_B   ,
- //        MI_C   , MI_Cs  , MI_D   , MI_Ds  , MI_E   , MI_F   ,    MI_Fs  , MI_G   , MI_Gs  , MI_A   , MI_As  , MI_B   ,
- //                                   XXXXXXX, MI_OCTD, MI_SOFT,    MI_SUST, MI_OCTU, TO(ALF)
- //        ),
+	[MID] = LAYOUT_split_3x6_3(
+        MI_C   , MI_Cs  , MI_D   , MI_Ds  , MI_E   , MI_F   ,    MI_Fs  , MI_G   , MI_Gs  , MI_A   , MI_As  , MI_B   ,
+        MI_C   , MI_Cs  , MI_D   , MI_Ds  , MI_E   , MI_F   ,    MI_Fs  , MI_G   , MI_Gs  , MI_A   , MI_As  , MI_B   ,
+        MI_C   , MI_Cs  , MI_D   , MI_Ds  , MI_E   , MI_F   ,    MI_Fs  , MI_G   , MI_Gs  , MI_A   , MI_As  , MI_B   ,
+                                   XXXXXXX, MI_OCTD, MI_SOFT,    MI_SUST, MI_OCTU, TO(ALF)
+        ),
 	// [SEQ] = LAYOUT_split_3x6_3(
  //        KC_NO  , KC_NO  , KC_NO  , KC_NO  , KC_NO  , KC_NO  ,    KC_NO  , KC_NO  , KC_NO  , KC_NO  , KC_NO  , KC_NO  ,
  //        KC_NO  , SQ_S(0), SQ_S(1), SQ_S(2), SQ_S(3), KC_NO  ,    SQ_RESU, SQ_S(8), SQ_S(9), SQ_S(10),SQ_S(11),KC_NO  ,
@@ -243,9 +243,9 @@ static void oled_render_layer_state(void) {
         case GMR:
             oled_write_ln_P(PSTR("Game"), false);
             break;
-        // case MID:
-        //     oled_write_ln_P(PSTR("MIDI"), false);
-        //     break;
+        case MID:
+            oled_write_ln_P(PSTR("MIDI"), false);
+            break;
         // case SEQ:
         //     oled_write_ln_P(PSTR("Sequencer"), false);
         //     break;
@@ -759,7 +759,7 @@ layer_state_t layer_state_set_user(layer_state_t state) {
     switch (get_highest_layer(state)) {
     case STN:
     case GMR:
-    // case MID:
+    case MID:
     // case SEQ:
         combo_disable();
         break;
