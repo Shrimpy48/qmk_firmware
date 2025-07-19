@@ -119,7 +119,7 @@ const key_override_t quote_key_override = ko_make_basic(MOD_MASK_SHIFT, UK_QUOT,
 const key_override_t scln_key_override = ko_make_basic(MOD_MASK_SHIFT, UK_COLN, UK_SCLN);
 
 // This globally defines all key overrides to be used
-const key_override_t **key_overrides = (const key_override_t *[]){
+const key_override_t *key_overrides[] = (const key_override_t *[]){
     &quote_key_override,
     &scln_key_override,
     NULL // Null terminate the array of overrides!
