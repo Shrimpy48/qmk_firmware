@@ -24,7 +24,7 @@ enum layers {
     GMR,
     // MID,
     // SEQ,
-    MOU,
+    // MOU,
 };
 
 enum keycodes {
@@ -52,7 +52,7 @@ enum keycodes {
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	[ALF] = LAYOUT_split_3x6_3(
-        TO(STN), UK_Q   , UK_W   , UK_F   , UK_P   , UK_B   ,    UK_J   , UK_L   , UK_U   , UK_Y   , UK_Z   , TO(MOU),
+        TO(STN), UK_Q   , UK_W   , UK_F   , UK_P   , UK_B   ,    UK_J   , UK_L   , UK_U   , UK_Y   , UK_Z   , KC_ESC,
         KC_BSPC, UK_A   , UK_R   , UK_S   , UK_T   , UK_G   ,    UK_M   , UK_N   , UK_E   , UK_I   , UK_O   , KC_DEL ,
         KC_BSPC, UK_QUOT, UK_X   , UK_C   , UK_D   , UK_V   ,    UK_K   , UK_H   , UK_COMM, UK_DOT , UK_COLN, KC_DEL ,
                             XXXXXXX, LT(SYM,KC_TAB), KC_SPC ,    MT(MOD_RSFT,KC_ENT), LT(NUM,KC_ESC), XXXXXXX
@@ -99,12 +99,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  //        KC_NO  , SQ_S(4), SQ_S(5), SQ_S(6), SQ_S(7), KC_NO  ,    SQ_RESD, SQ_S(12),SQ_S(13),SQ_S(14),SQ_S(15),KC_NO  ,
  //                                   XXXXXXX, SQ_TMPD, SQ_TOG ,    SQ_TOG , SQ_TMPU, TO(ALF)
  //        ),
-	[MOU] = LAYOUT_split_3x6_3(
-        KC_ACL2, KC_BTN5, KC_BTN1, KC_BTN2, KC_BTN3, KC_BTN4,    DG_0_0 , DG_1_0 , DG_2_0 , DG_3_0 , DG_4_0 , DG_5_0 ,
-        KC_ACL1, KC_MS_L, KC_MS_U, KC_MS_D, KC_MS_R, KC_BTN6,    DG_0_1 , DG_1_1 , DG_2_1 , DG_3_1 , DG_4_1 , DG_5_1 ,
-        KC_ACL0, KC_WH_L, KC_WH_U, KC_WH_D, KC_WH_R, KC_BTN7,    DG_0_2 , DG_1_2 , DG_2_2 , DG_3_2 , DG_4_2 , DG_5_2 ,
-                                   XXXXXXX, KC_BTN2, KC_BTN1,    DG_BTN1, DG_BTN2, TO(ALF)
-        ),
+	// [MOU] = LAYOUT_split_3x6_3(
+ //        KC_ACL2, KC_BTN5, KC_BTN1, KC_BTN2, KC_BTN3, KC_BTN4,    DG_0_0 , DG_1_0 , DG_2_0 , DG_3_0 , DG_4_0 , DG_5_0 ,
+ //        KC_ACL1, KC_MS_L, KC_MS_U, KC_MS_D, KC_MS_R, KC_BTN6,    DG_0_1 , DG_1_1 , DG_2_1 , DG_3_1 , DG_4_1 , DG_5_1 ,
+ //        KC_ACL0, KC_WH_L, KC_WH_U, KC_WH_D, KC_WH_R, KC_BTN7,    DG_0_2 , DG_1_2 , DG_2_2 , DG_3_2 , DG_4_2 , DG_5_2 ,
+ //                                   XXXXXXX, KC_BTN2, KC_BTN1,    DG_BTN1, DG_BTN2, TO(ALF)
+ //        ),
 };
 
 // --- State ---
@@ -252,9 +252,9 @@ static void oled_render_layer_state(void) {
         case FUN:
             oled_write_ln_P(PSTR("Function"), false);
             break;
-        case MOU:
-            oled_write_ln_P(PSTR("Mouse"), false);
-            break;
+        // case MOU:
+        //     oled_write_ln_P(PSTR("Mouse"), false);
+        //     break;
         case ALF:
             oled_write_ln_P(PSTR("Alpha"), false);
             break;
